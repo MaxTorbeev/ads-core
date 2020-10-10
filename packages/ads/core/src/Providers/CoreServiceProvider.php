@@ -15,16 +15,6 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     protected $namespace;
 
     /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
-    /**
      * Bootstrap services.
      *
      * @return void
@@ -33,6 +23,16 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     {
         $this->initialization();
         $this->observers();
+    }
+
+    /**
+     * Register services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->register(ResponseMacroServiceProvider::class);
     }
 
     /**

@@ -165,7 +165,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+        Ads\Core\Providers\CoreServiceProvider::class,
+        
         /*
          * Application Service Providers...
          */
