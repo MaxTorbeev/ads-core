@@ -1,0 +1,1 @@
+# ADS wsdl client package

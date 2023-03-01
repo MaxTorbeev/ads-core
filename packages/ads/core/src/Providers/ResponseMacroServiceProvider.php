@@ -7,12 +7,8 @@ use Illuminate\Support\ServiceProvider;
 
 class ResponseMacroServiceProvider extends ServiceProvider
 {
-    private $response;
-
-    public function boot(ResponseFactory $responseFactory): void
+    public function boot(): void
     {
-        $this->response = $responseFactory;
-
         $this->success();
         $this->error();
     }
@@ -22,8 +18,8 @@ class ResponseMacroServiceProvider extends ServiceProvider
      */
     private function success(): void
     {
-        $this->response->macro('success', function (string $message = 'success', array $data = [], $headers = []) {
-            return $this->response->json([
+        response()->macro('success', function (string $message = 'success', array|string $data = [], $headers = []) {
+            return response()->json([
                 'error' => 0,
                 'message' => $message,
                 'data' => $data,
@@ -36,14 +32,14 @@ class ResponseMacroServiceProvider extends ServiceProvider
      */
     private function error(): void
     {
-        $this->response->macro('error', function ($error = 400, $message = 'error', $data = [], $status = 200) {
+        response()->macro('error', function ($error = 400, $message = 'error', $data = [], $status = 200) {
             if (is_array($data)) {
                 if (!array_key_exists('error_id', $data)) {
                     $data['error_id'] = request()->get('request_id');
                 }
             }
 
-            return $this->response->json([
+            return response()->json([
                 'error' => $error,
                 'message' => $message,
                 'data' => $data,
