@@ -10,40 +10,67 @@ class DefaultLogger implements LoggerDriver
 {
     private Log $log;
 
-    public function request(LoggerParametersDto $request): self
+    private array $exceptedFields;
+
+    public function getModel(): Log
     {
-        $this->log = Log::create($this->formatRequest($request));
+        return $this->log;
+    }
+
+    public function request(LoggerParametersDto $parameters): self
+    {
+        $this->setExceptedFields($parameters, 'response');
+
+        $this->log = Log::create($this->formatRequest($parameters));
 
         return $this;
     }
 
-    public function response(LoggerParametersDto $request): self
+    public function response(LoggerParametersDto $parameters): self
     {
+        $this->setExceptedFields($parameters, 'response');
+
+        $responseData = $this->eraseFieldsWithEllipsis($this->exceptedFields['response'], $parameters->getResponse());
+
         $this->log->update([
-            'response' => $request->getResponse(),
-            'executing_time' => $request->getExecutingTime()
+            'response' => $responseData,
+            'executing_time' => $parameters->getExecutingTime(),
+            'user_id' => $parameters->getUser()?->id,
         ]);
 
         return $this;
     }
 
-    private function formatRequest(LoggerParametersDto $request): array
+    private function setExceptedFields( LoggerParametersDto $parameters, string $scope = 'request'): void
     {
+        $this->exceptedFields[$scope] = [];
+
         $routeName = Route::currentRouteName();
 
-        $exceptedFields = config('core.logging')['except'][$routeName]
-            ?? config('logging')['fields_exclusion'][$request->getUri()]
-            ?? null;
+        if (isset (config('ads-logger.except')[$routeName]) && isset(config('ads-logger.except')[$routeName][$scope])) {
+            $this->exceptedFields[$scope] = config('ads-logger.except')[$routeName][$scope];
+        } else if (isset(config('ads-logger.except')['fields_exclusion']) && isset(config('ads-logger.except')['fields_exclusion'][$parameters->getUri()])) {
+            $this->exceptedFields[$scope] = config('ads-logger.except')['fields_exclusion'][$parameters->getUri()];
+        }
+    }
 
-        $requestData = $exceptedFields
-            ? $this->eraseFieldsWithEllipsis($exceptedFields, $request->getRequest())
-            : $request->getRequest();
+    /**
+     * Formatting log request data.
+     *
+     * @param LoggerParametersDto $request
+     * @return array
+     */
+    private function formatRequest(LoggerParametersDto $parameters): array
+    {
+        $requestData = $this->exceptedFields
+            ? $this->eraseFieldsWithEllipsis($this->exceptedFields, $parameters->getRequest())
+            : $parameters->getRequest();
 
         return [
-            'uri' => $request->getUri(),
-            'user_id' => $request->getUser()?->id,
+            'uri' => $parameters->getUri(),
+            'user_id' => $parameters->getUser()?->id,
             'request' => $requestData,
-            'type' => $request->getType(),
+            'type' => $parameters->getType(),
         ];
     }
 
@@ -54,9 +81,10 @@ class DefaultLogger implements LoggerDriver
      * @param array $data
      * @return array
      */
-    private function eraseFieldsWithEllipsis(array|string $fields, array $data): array
+    private function eraseFieldsWithEllipsis(array|string $fields, array|string $data): array|string
     {
-        if (!is_array($fields)) return $data;
+        if (!is_array($fields))
+            return $data;
 
         foreach ($fields as $field) {
             if (data_get($data, $field)) {

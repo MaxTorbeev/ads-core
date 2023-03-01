@@ -1,14 +1,18 @@
 <?php
 
+use Ads\Logger\Services\Logger\DefaultLogger;
+
 return [
     /*
     |--------------------------------------------------------------------------
     | Logger configs
     |--------------------------------------------------------------------------
     */
-    'driver' => \Ads\Logger\Services\Logger\DefaultLogger::class,
+    'driver' => DefaultLogger::class,
 
-    'logging' => [
+    'max_length' => 1024,
+
+    'except' => [
         /*
         |--------------------------------------------------------------------------
         | Исключение информации из полей при записи в лог
@@ -26,6 +30,14 @@ return [
         'fields_exclusion' => [
             'broadcasting/auth' => false,
             'logout' => false,
+        ],
+        'user.show' => [
+            'request' => [
+                'password',
+            ],
+            'response' => [
+                'password',
+            ],
         ],
         'user.store' => [
             'request' => [

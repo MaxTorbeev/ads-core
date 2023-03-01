@@ -7,19 +7,21 @@ use Ads\Logger\Services\Logger\LoggerParametersDto;
 
 interface LoggerDriver
 {
+    public function getModel(): Log;
+
     /**
      * Создает лог запись c данными запроса и возвращает еше id
      *
-     * @param LoggerParametersDto $request
+     * @param LoggerParametersDto $parameters
      * @return LoggerDriver
      */
-    public function request(LoggerParametersDto $request): self;
+    public function request(LoggerParametersDto $parameters): self;
 
     /**
      * Записывает в лог ответ
      *
-     * @param LoggerParametersDto $request
+     * @param LoggerParametersDto $parameters
      * @return mixed
      */
-    public function response(LoggerParametersDto $request): self;
+    public function response(LoggerParametersDto $parameters): self;
 }
