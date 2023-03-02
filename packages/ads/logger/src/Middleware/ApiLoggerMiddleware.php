@@ -2,7 +2,7 @@
 
 namespace Ads\Logger\Middleware;
 
-use Ads\Logger\Contracts\Logging\LoggerDriver;
+use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Enums\LogTypes;
 use Ads\Logger\Services\Logger\LoggerParametersDto;
 use Closure;
@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class ApiLoggerMiddleware
 {
-    protected LoggerDriver $logger;
+    protected HttpLogger $logger;
 
-    public function __construct(LoggerDriver $logger)
+    public function __construct(HttpLogger $logger)
     {
         $this->logger = $logger;
     }
@@ -40,7 +40,7 @@ class ApiLoggerMiddleware
 
         $logger->response(
             $logParams
-                ->setResponse($response->original['data'])
+                ->setResponse($response->original['data'] ?? $response->original)
                 ->setUser(auth()->user())
         );
 

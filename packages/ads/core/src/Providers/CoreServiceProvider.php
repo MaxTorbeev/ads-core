@@ -5,7 +5,7 @@ namespace Ads\Core\Providers;
 use Ads\Core\Contracts\Provider\AdsServiceProvider;
 use Ads\Core\Observers\LogObserver;
 use Ads\Core\Traits\HasProvider;
-use Ads\Logger\Contracts\Logging\LoggerDriver;
+use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Models\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -43,7 +43,7 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
                 ->group(__DIR__ . './../../routes/api.php');
         }
 
-        $this->app->singleton(LoggerDriver::class, config('core.logger'));
+        $this->app->singleton(HttpLogger::class, config('core.logger'));
     }
 
     /**

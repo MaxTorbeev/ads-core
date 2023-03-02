@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Ads\Logger\Contracts\Logging\LoggerDriver;
+use Ads\Logger\Contracts\Logging\HttpLogger;
+use Ads\WsdClient\Services\Clients\WsdlClient;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class WsdlController extends Controller
 {
-    public function index(LoggerDriver $loggerDriver): JsonResponse
+    public function index(HttpLogger $loggerDriver, WsdlClient $client): JsonResponse
     {
         auth()->setUser(User::find(1));
 
-        return response()->success($loggerDriver->getModel()->toArray());
+        $response = $client->setUser(auth()->user()->userWs)
+            ->setWsdl('itil.1cws')
+            ->request('getListTiket');
+
+        return response()->success($response);
     }
 }

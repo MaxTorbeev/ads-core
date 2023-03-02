@@ -5,7 +5,7 @@ namespace Ads\Logger\Contracts\Logging;
 use Ads\Logger\Models\Log;
 use Ads\Logger\Services\Logger\LoggerParametersDto;
 
-interface LoggerDriver
+interface HttpLogger
 {
     public function getModel(): Log;
 
@@ -13,7 +13,7 @@ interface LoggerDriver
      * Создает лог запись c данными запроса и возвращает еше id
      *
      * @param LoggerParametersDto $parameters
-     * @return LoggerDriver
+     * @return HttpLogger
      */
     public function request(LoggerParametersDto $parameters): self;
 

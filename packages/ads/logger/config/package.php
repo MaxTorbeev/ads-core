@@ -6,7 +6,7 @@ return [
     | Logger configs
     |--------------------------------------------------------------------------
     */
-    'driver' => \Ads\Logger\Services\Logger\DefaultLogger::class,
+    'driver' => \Ads\Logger\Services\Logger\DefaultHttpLogger::class,
 
     'logging' => [
         /*

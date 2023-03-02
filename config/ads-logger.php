@@ -1,6 +1,6 @@
 <?php
 
-use Ads\Logger\Services\Logger\DefaultLogger;
+use Ads\Logger\Services\Logger\DefaultHttpLogger;
 
 return [
     /*
@@ -8,7 +8,7 @@ return [
     | Logger configs
     |--------------------------------------------------------------------------
     */
-    'driver' => DefaultLogger::class,
+    'driver' => DefaultHttpLogger::class,
 
     'max_length' => 1024,
 

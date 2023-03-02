@@ -2,7 +2,9 @@
 
 namespace Ads\WsdClient\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UserWs extends Model
 {
@@ -13,4 +15,9 @@ class UserWs extends Model
         'login',
         'password'
     ];
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(config('auth.providers.users.model'));
+    }
 }

@@ -5,7 +5,7 @@ namespace Ads\Logger\Providers;
 use Ads\Core\Contracts\Provider\AdsServiceProvider;
 use Ads\Core\Observers\LogObserver;
 use Ads\Core\Traits\HasProvider;
-use Ads\Logger\Contracts\Logging\LoggerDriver;
+use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Models\Log;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,7 +32,7 @@ class LoggerServiceProvider extends ServiceProvider implements AdsServiceProvide
 
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
-        $this->app->singleton(LoggerDriver::class, config('ads-logger.driver'));
+        $this->app->singleton(HttpLogger::class, config('ads-logger.driver'));
     }
 
     /**

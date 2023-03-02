@@ -2,8 +2,12 @@
 
 namespace Ads\WsdClient\Services\Clients;
 
+use Ads\Logger\Contracts\Logging\HttpLogger;
+use Ads\Logger\Enums\LogTypes;
+use Ads\Logger\Services\Logger\LoggerParametersDto;
 use Ads\WsdClient\Exceptions\SoapException;
 use Ads\WsdClient\Models\UserWs;
+use Ads\WsdClient\Services\Logger\WsdlClientLogger;
 use Illuminate\Support\Facades\Auth;
 
 class WsdlClient
@@ -12,8 +16,12 @@ class WsdlClient
 
     private string $wsdl;
 
-    public function __construct(?UserWs $user)
+    private WsdlClientLogger $logger;
+
+    public function __construct(?UserWs $user, WsdlClientLogger $logger)
     {
+        $this->logger = $logger;
+
         $this->user = $user
             ? clone($user)
             : clone(Auth::user()->userWs);
@@ -28,23 +36,44 @@ class WsdlClient
 
     public function setWsdl(string $wsdl): self
     {
-        $this->wsdl = $this->user->url . $this->wsdl . '?wsdl';
+        $this->wsdl = $this->user->url . $wsdl . '?wsdl';
 
         return $this;
     }
+
 
     /**
      * @throws SoapException
      */
     public function request(string $method, array $params = []): mixed
     {
+        $loggerParams = (new LoggerParametersDto())
+            ->setUser($this->user->user)
+            ->setUri($this->wsdl)
+            ->setRequest($this->getOptions())
+            ->setType(LogTypes::SOAP->value);
+
         try {
-            $client = new \SoapClient($this->user->url . $this->wsdl . '?wsdl', $this->getOptions());
+
+            $this->logger->request(
+                $loggerParams
+            );
+
+            $client = new \SoapClient($this->wsdl, $this->getOptions());
 
             $response = $client->{$method}($params);
 
+            $this->logger->response(
+                $loggerParams->setResponse($response)
+            );
+
             return $response->return ?? throw new SoapException('Нет ответа от 1C сервера');
         } catch (\Exception $e) {
+
+            $this->logger->response(
+                $loggerParams->setResponse($e->getMessage())
+            );
+
             throw new SoapException($e->getMessage(), false);
         }
     }

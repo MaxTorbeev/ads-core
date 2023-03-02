@@ -2,11 +2,12 @@
 
 namespace Ads\Logger\Services\Logger;
 
-use Ads\Logger\Contracts\Logging\LoggerDriver;
+use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Models\Log;
 use Illuminate\Support\Facades\Route;
+use stdClass;
 
-class DefaultLogger implements LoggerDriver
+abstract class AbstractDefaultLogger implements HttpLogger
 {
     private Log $log;
 
@@ -57,7 +58,7 @@ class DefaultLogger implements LoggerDriver
     /**
      * Formatting log request data.
      *
-     * @param LoggerParametersDto $request
+     * @param LoggerParametersDto $parameters
      * @return array
      */
     private function formatRequest(LoggerParametersDto $parameters): array
@@ -77,14 +78,19 @@ class DefaultLogger implements LoggerDriver
     /**
      * Затереть значения полей многоточием.
      *
-     * @param string|array $fields
-     * @param array $data
-     * @return array
+     * @param array|string $fields
+     * @param array|stdClass|string $data
+     * @return array|string
      */
-    private function eraseFieldsWithEllipsis(array|string $fields, array|string $data): array|string
+    private function eraseFieldsWithEllipsis(array|string $fields, array|stdClass|string $data): array|string
     {
-        if (!is_array($fields))
+        if (!is_array($fields)) {
             return $data;
+        }
+
+        if ($data instanceof stdClass) {
+            $data = (array)$data;
+        }
 
         foreach ($fields as $field) {
             if (data_get($data, $field)) {

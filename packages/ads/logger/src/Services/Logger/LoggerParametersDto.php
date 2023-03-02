@@ -3,6 +3,7 @@
 namespace Ads\Logger\Services\Logger;
 
 use App\Models\User;
+use \stdClass;
 
 class LoggerParametersDto
 {
@@ -12,7 +13,7 @@ class LoggerParametersDto
 
     private array $request;
 
-    private array|string|null $response;
+    private array|stdClass|string|null $response;
 
     private string $ip;
 
@@ -80,18 +81,18 @@ class LoggerParametersDto
     }
 
     /**
-     * @return array|null
+     * @return array|stdClass|string|null
      */
-    public function getResponse(): array|string|null
+    public function getResponse(): array|stdClass|string|null
     {
         return $this->response;
     }
 
     /**
-     * @param array|string|null $response
+     * @param array|stdClass|string|null $response
      * @return LoggerParametersDto
      */
-    public function setResponse(array|string|null $response): self
+    public function setResponse(array|stdClass|string|null $response): self
     {
         $this->response = $response;
 
