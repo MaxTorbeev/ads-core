@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/packages/ads/core/vendor
 /storage/*.key
 /vendor
 .idea
