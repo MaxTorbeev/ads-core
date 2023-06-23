@@ -4,7 +4,6 @@
 /packages/ads/core/vendor
 /storage/*.key
 /vendor
-/packages/ads/core/vendor
 .idea
 .env
 .env.backup

@@ -1,0 +1,31 @@
+<?php
+
+namespace Ads\Core\Models;
+
+use Ads\Core\Exceptions\PermissionDoesNotExistException;
+use Ads\Core\Traits\HasRole;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Permission extends Model
+{
+    use HasFactory, HasRole;
+
+    /**
+     * Find a permission by its name.
+     *
+     * @param $name
+     * @return Permission
+     * @throws PermissionDoesNotExistException
+     */
+    public static function findByName($name): Permission
+    {
+        $permission = static::where('name', $name)->first();
+
+        if (!$permission) {
+            throw new PermissionDoesNotExistException();
+        }
+
+        return $permission;
+    }
+}
