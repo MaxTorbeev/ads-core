@@ -32,6 +32,13 @@ class UserController extends Controller
         );
     }
 
+    public function store(Request $request): JsonResponse
+    {
+        return response()->success(
+            $this->userService->store($request->all())
+        );
+    }
+
     public function update(User $user, Request $request): JsonResponse
     {
         return response()->success(
@@ -39,7 +46,7 @@ class UserController extends Controller
         );
     }
 
-    public function delete(User $user): JsonResponse
+    public function destroy(User $user): JsonResponse
     {
         return response()->success(
             $this->userService->delete($user)

@@ -13,11 +13,11 @@ class PermissionSeeder extends Seeder
             'label' => 'Просмотр пользователей'
         ],
         [
-            'name' => 'create_user',
+            'name' => 'user_create',
             'label' => 'Создание/редактирование пользователя'
         ],
         [
-            'name' => 'delete_user',
+            'name' => 'user_delete',
             'label' => 'Удаление пользователя'
         ],
         [

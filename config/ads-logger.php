@@ -12,6 +12,10 @@ return [
 
     'max_length' => 1024,
 
+    'success_store_days' => env('ADS_LOGGER_SUCCESS_STORE_DAYS', 14),
+
+    'error_store_days' => env('ADS_LOGGER_ERROR_STORE_DAYS', 14),
+
     'except' => [
         /*
         |--------------------------------------------------------------------------
@@ -27,10 +31,6 @@ return [
         |   ]
         | 'broadcasting/auth' => false, // Логирование полностью отключено для этого URI
         */
-        'fields_exclusion' => [
-            'broadcasting/auth' => false,
-            'logout' => false,
-        ],
         'user.show' => [
             'request' => [
                 'password',

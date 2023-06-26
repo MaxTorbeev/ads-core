@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /packages/ads/core/vendor
+/packages/ads/websockets/vendor
 /storage/*.key
 /vendor
 .idea

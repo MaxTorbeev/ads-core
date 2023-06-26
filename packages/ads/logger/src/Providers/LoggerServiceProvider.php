@@ -24,6 +24,11 @@ class LoggerServiceProvider extends ServiceProvider implements AdsServiceProvide
         $this->observers();
     }
 
+    public function register()
+    {
+
+    }
+
     public function initialization(): void
     {
         $this->publishes([

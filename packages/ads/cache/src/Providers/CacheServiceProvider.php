@@ -2,6 +2,7 @@
 
 namespace Ads\Cache\Providers;
 
+use Illuminate\Log\LogServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,5 +17,10 @@ class CacheServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->group(__DIR__ . './../../routes/api.php');
         }
+    }
+
+    public function register()
+    {
+        $this->app->register(LogServiceProvider::class);
     }
 }

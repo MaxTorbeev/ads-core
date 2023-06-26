@@ -56,7 +56,6 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
      */
     public function register()
     {
-        $this->app->register(CacheServiceProvider::class);
         $this->app->register(ResponseMacroServiceProvider::class);
     }
 
