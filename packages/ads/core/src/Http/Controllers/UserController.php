@@ -2,6 +2,7 @@
 
 namespace Ads\Core\Http\Controllers;
 
+use Ads\Core\Http\Requests\UserRequest;
 use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     private UserService $userService;
+
     public function __construct(UserService $userService)
     {
         $this->authorizeResource(User::class, 'user');
@@ -32,17 +34,17 @@ class UserController extends Controller
         );
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(UserRequest $request): JsonResponse
     {
         return response()->success(
-            $this->userService->store($request->all())
+            $this->userService->store($request->validated())
         );
     }
 
-    public function update(User $user, Request $request): JsonResponse
+    public function update(User $user, UserRequest $request): JsonResponse
     {
         return response()->success(
-            $this->userService->update($user, $request->all())
+            $this->userService->update($user, $request->validated())
         );
     }
 

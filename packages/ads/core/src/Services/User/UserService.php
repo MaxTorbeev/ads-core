@@ -8,6 +8,12 @@ use Illuminate\Support\Collection;
 
 class UserService
 {
+    public function __construct(
+        private AuthService $authService
+    )
+    {
+    }
+
     public function index(array $params = []): Collection
     {
         return User::all();
@@ -20,6 +26,8 @@ class UserService
 
     public function store(array $params = []): User
     {
+        $user = $this->authService->user();
+
         return User::create($params);
     }
 
