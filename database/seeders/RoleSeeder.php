@@ -12,6 +12,13 @@ class RoleSeeder extends Seeder
         [
             'name' => 'admin',
             'label' => 'Администратор',
+        ],
+        [
+            'name' => 'editor',
+            'label' => 'Редактор',
+            'permissions' => [
+                'cache_clear'
+            ]
         ]
     ];
 
@@ -22,8 +29,14 @@ class RoleSeeder extends Seeder
     {
         foreach ($this->roles as $role) {
             if (!Role::whereName($role['name'])->exists()) {
-                $role = Role::create($role);
+                unset($role['permissions']);
 
+                Role::create($role);
+            }
+        }
+
+        foreach (Role::all() as $role) {
+            if ($role->name === 'admin') {
                 foreach ((new PermissionSeeder())->permissions as $item) {
                     if ($role->hasPermissionTo($item['name'])) {
                         continue;
@@ -31,7 +44,20 @@ class RoleSeeder extends Seeder
 
                     $role->givePermissionTo(Permission::whereName($item['name'])->first());
                 }
+            } else {
+                $permissions = array_filter($this->roles, fn ($r) => $r['name'] === $role->name);
+
+                if (isset($permissions['permissions'])) {
+                    foreach ($permissions['permissions'] as $permission) {
+                        if ($role->hasPermissionTo($permission)) {
+                            continue;
+                        }
+
+                        $role->givePermissionTo(Permission::whereName($permission)->first());
+                    }
+                }
             }
         }
+
     }
 }

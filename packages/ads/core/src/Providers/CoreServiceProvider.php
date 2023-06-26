@@ -2,6 +2,7 @@
 
 namespace Ads\Core\Providers;
 
+use Ads\Cache\Providers\CacheServiceProvider;
 use Ads\Core\Contracts\Provider\AdsServiceProvider;
 use Ads\Core\Observers\LogObserver;
 use Ads\Core\Traits\HasProvider;
@@ -9,6 +10,7 @@ use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Models\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Ads\Core\Policies\RolePolicies;
 
 class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
 {
@@ -25,6 +27,7 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     {
         $this->initialization();
         $this->observers();
+        $this->initRoles();
     }
 
     public function initialization(): void
@@ -37,7 +40,7 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
         if (file_exists(__DIR__ . '/../../routes/api.php')) {
-            Route::prefix('api')
+            Route::prefix('api/core')
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(__DIR__ . './../../routes/api.php');
@@ -53,6 +56,7 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
      */
     public function register()
     {
+        $this->app->register(CacheServiceProvider::class);
         $this->app->register(ResponseMacroServiceProvider::class);
     }
 
@@ -62,5 +66,10 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     public function observers(): void
     {
         Log::observe(LogObserver::class);
+    }
+
+    public function initRoles(): void
+    {
+        RolePolicies::define();
     }
 }

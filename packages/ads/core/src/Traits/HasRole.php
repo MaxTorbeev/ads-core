@@ -2,8 +2,10 @@
 
 namespace Ads\Core\Traits;
 
+use Ads\Core\Models\Permission;
 use Ads\Core\Models\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasRole
 {
@@ -37,5 +39,22 @@ trait HasRole
     public function hasRole(string $role): bool
     {
         return $this->roles->contains('name', $role);
+    }
+
+    public function permissions(): Attribute
+    {
+        $result = collect();
+
+        $roles = $this->roles()->with('permissions')->get();
+
+        $permission = $roles
+            ->map(fn($item) => $item->permissions->map(fn($p) => $p->label))
+            ->each(fn($item) => $result->push($item->toArray()))
+            ->flatten()
+            ->unique();
+
+        return Attribute::make(
+            get: fn () => $permission->toArray()
+        );
     }
 }

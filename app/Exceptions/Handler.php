@@ -2,10 +2,18 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    protected string $defaultErrorMessage = 'Произошла ошибка при обработке запроса. Обратитесь к разработчику.';
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -24,6 +32,37 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    public function render($request, Throwable $exception)
+    {
+        $data = config('app.debug')
+            ? [
+                'file' => $exception->getFile(),
+                'line' => $exception->getLine(),
+                'exception' => $exception::class
+            ]
+            : [];
+
+        switch (get_class($exception)) {
+            case ModelNotFoundException::class:
+            case MethodNotAllowedHttpException::class :
+            case NotFoundHttpException::class :
+                return response()->error(404, $data, $exception->getMessage());
+
+            case ValidationException::class:
+                return response()->error($exception->getCode(), $data, $exception->validator->errors()->first(), 422);
+
+            case AuthenticationException::class:
+                return response()->error($exception->getCode(), $data, $exception->getMessage(), 401);
+
+            default:
+                $message = !config('app.debug')
+                    ? $this->defaultErrorMessage
+                    : $exception->getMessage();
+
+                return response()->error($exception->getCode(), $data, $message);
+        }
+    }
 
     /**
      * Register the exception handling callbacks for the application.

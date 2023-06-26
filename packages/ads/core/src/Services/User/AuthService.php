@@ -4,10 +4,9 @@ namespace Ads\Core\Services\User;
 
 use Ads\Core\Exceptions\User\UserPasswordInvalidException;
 use App\Models\User;
-use Ads\Core\Exceptions\User\UserNotFoundException;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class AuthServiceProvider
+class AuthService
 {
     /**
      * Getting auth user.
@@ -22,22 +21,19 @@ class AuthServiceProvider
     /**
      * Auth user by email and password
      *
-     * @throws UserNotFoundException
      * @throws UserPasswordInvalidException
      */
-    public function login(string $email, string $password): array
+    public function login(User $user, string $password): array
     {
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
-            throw new UserNotFoundException();
-        }
-
-        if ($user->passwordIsValid($user, $password)) {
+        if ($user->passwordIsValid($password)) {
             $token = $this->auth($user);
 
             return array_merge(
-                $user->makeHidden('tokens')->toArray(),
+                $user
+                    ->setHidden(['created_at', 'updated_at', 'user_ws_id', 'parent_id'])
+                    ->setAppends(['permissions'])
+                    ->makeHidden('tokens')
+                    ->toArray(),
                 ['token' => $token],
             );
         }
@@ -56,5 +52,12 @@ class AuthServiceProvider
         return $user->createToken('auth-token')->plainTextToken;
     }
 
+    public function logout(User|null $user = null): bool
+    {
+        if ($user) {
+            return $user->tokens()->delete();
+        }
 
+        return $this->user()->tokens()->delete();
+    }
 }

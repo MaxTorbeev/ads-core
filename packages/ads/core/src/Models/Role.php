@@ -12,6 +12,8 @@ class Role extends Model
 {
     use HasFactory, HasUser, HasPermission;
 
+    protected $hidden = ['pivot'];
+
     /**
      * @use $role->permissions()
      *
@@ -19,7 +21,7 @@ class Role extends Model
      */
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class)->select('label', 'name');
     }
 
     /**

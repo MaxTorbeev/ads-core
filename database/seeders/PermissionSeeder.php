@@ -18,7 +18,11 @@ class PermissionSeeder extends Seeder
         ],
         [
             'name' => 'delete_user',
-            'label' => 'Создание пользователя'
+            'label' => 'Удаление пользователя'
+        ],
+        [
+            'name' => 'cache_clear',
+            'label' => 'Очистка кэша'
         ]
     ];
     /**
