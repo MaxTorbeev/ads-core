@@ -17,7 +17,6 @@ class ApiLoggerMiddleware
         $this->logger = $logger;
     }
 
-
     /**
      * Handle log middleware.
      *
@@ -37,6 +36,12 @@ class ApiLoggerMiddleware
         $logger = $this->logger->request($logParams);
 
         $response = $next($request);
+
+        $logParams->setResponseCode(
+            $response->exception->status
+            ?? (method_exists($response, 'status') ? $response->status() : null)
+            ?? (method_exists($response, 'getStatusCode') ? $response->getStatusCode() : null),
+        );
 
         $logger->response(
             $logParams

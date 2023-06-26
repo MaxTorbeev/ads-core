@@ -3,7 +3,7 @@
 namespace Ads\Logger\Services\Logger;
 
 use App\Models\User;
-use \stdClass;
+use stdClass;
 
 class LoggerParametersDto
 {
@@ -15,9 +15,11 @@ class LoggerParametersDto
 
     private array|stdClass|string|null $response;
 
-    private string $ip;
+    private null|string $ip = null;
 
     private string $type;
+
+    private null|int $response_code = 200;
 
     /**
      * @return string
@@ -54,9 +56,9 @@ class LoggerParametersDto
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
-    public function getExecutingTime(): ?int
+    public function getExecutingTime(): ?float
     {
         return microtime(true) - LARAVEL_START;
     }
@@ -100,9 +102,9 @@ class LoggerParametersDto
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIp(): string
+    public function getIp(): ?string
     {
         return $this->ip;
     }
@@ -133,6 +135,25 @@ class LoggerParametersDto
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getResponseCode(): ?int
+    {
+        return $this->response_code;
+    }
+
+    /**
+     * @param int|null $response_code
+     * @return LoggerParametersDto
+     */
+    public function setResponseCode(?int $response_code): self
+    {
+        $this->response_code = $response_code;
 
         return $this;
     }

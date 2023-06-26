@@ -20,7 +20,12 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
     public function request(LoggerParametersDto $parameters): self
     {
-        $this->setExceptedFields($parameters, 'response');
+        if (!$this->canCreateLog($parameters)) {
+            return $this;
+        }
+
+        $this->setExceptedFields($parameters);
+
 
         $this->log = Log::create($this->formatRequest($parameters));
 
@@ -29,6 +34,10 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
     public function response(LoggerParametersDto $parameters): self
     {
+        if (!$this->canCreateLog($parameters)) {
+            return $this;
+        }
+
         $this->setExceptedFields($parameters, 'response');
 
         $responseData = $this->eraseFieldsWithEllipsis($this->exceptedFields['response'], $parameters->getResponse());
@@ -37,12 +46,13 @@ abstract class AbstractDefaultLogger implements HttpLogger
             'response' => $responseData,
             'executing_time' => $parameters->getExecutingTime(),
             'user_id' => $parameters->getUser()?->id,
+            'response_code' => $parameters->getResponseCode()
         ]);
 
         return $this;
     }
 
-    private function setExceptedFields( LoggerParametersDto $parameters, string $scope = 'request'): void
+    private function setExceptedFields(LoggerParametersDto $parameters, string $scope = 'request'): void
     {
         $this->exceptedFields[$scope] = [];
 
@@ -50,8 +60,8 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
         if (isset (config('ads-logger.except')[$routeName]) && isset(config('ads-logger.except')[$routeName][$scope])) {
             $this->exceptedFields[$scope] = config('ads-logger.except')[$routeName][$scope];
-        } else if (isset(config('ads-logger.except')['fields_exclusion']) && isset(config('ads-logger.except')['fields_exclusion'][$parameters->getUri()])) {
-            $this->exceptedFields[$scope] = config('ads-logger.except')['fields_exclusion'][$parameters->getUri()];
+        } else if (isset(config('ads-logger.except')[$parameters->getUri()][$scope])) {
+            $this->exceptedFields[$scope] = config('ads-logger.except')[$parameters->getUri()][$scope];
         }
     }
 
@@ -63,13 +73,14 @@ abstract class AbstractDefaultLogger implements HttpLogger
      */
     private function formatRequest(LoggerParametersDto $parameters): array
     {
-        $requestData = $this->exceptedFields
-            ? $this->eraseFieldsWithEllipsis($this->exceptedFields, $parameters->getRequest())
+        $requestData = $this->exceptedFields['request']
+            ? $this->eraseFieldsWithEllipsis($this->exceptedFields['request'], $parameters->getRequest())
             : $parameters->getRequest();
 
         return [
             'uri' => $parameters->getUri(),
             'user_id' => $parameters->getUser()?->id,
+            'ip' => $parameters->getIp(),
             'request' => $requestData,
             'type' => $parameters->getType(),
         ];
@@ -99,5 +110,21 @@ abstract class AbstractDefaultLogger implements HttpLogger
         }
 
         return $data;
+    }
+
+    /**
+     * Сверить с настройками, есть ли возможность использовать логгер
+     *
+     * @param LoggerParametersDto $parameters
+     * @return bool
+     */
+    private function canCreateLog(LoggerParametersDto $parameters): bool
+    {
+        $routeName = Route::currentRouteName();
+        $uri = $parameters->getUri();
+        $configs = config('ads-logger.except');
+
+        return (!isset($configs[$routeName]) || isset($configs[$routeName]) && $configs[$routeName] !== false)
+            && (!isset($configs[$uri]) || isset($configs[$uri]) && $configs[$uri] !== false);
     }
 }

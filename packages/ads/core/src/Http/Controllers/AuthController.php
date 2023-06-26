@@ -25,7 +25,19 @@ class AuthController extends Controller
      */
     public function login(AuthRequest $request): JsonResponse
     {
-        $user = User::where('login', $request->login)->first();
+        if ($request->has('login')) {
+            $user = User::where('login', $request->login)->first();
+        } else if ($request->has('email')) {
+            $user = User::where('email', $request->email)->first();
+        } else if ($request->has('phone')) {
+            $user = User::where('phone', $request->phone)->first();
+        } else {
+            throw new UserNotFoundException();
+        }
+
+        if (!$user) {
+            throw new UserNotFoundException();
+        }
 
         return response()->success(
             $this->service->login($user, $request->password)
