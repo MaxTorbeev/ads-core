@@ -30,7 +30,7 @@ class AuthService
 
             return array_merge(
                 $user
-                    ->setHidden(['created_at', 'updated_at', 'user_ws_id', 'parent_id'])
+                    ->setHidden(['created_at', 'updated_at', 'user_ws_id', 'parent_id', 'password', 'email_verified_at', 'remember_token'])
                     ->setAppends(['permissions'])
                     ->makeHidden('tokens')
                     ->toArray(),
