@@ -41,6 +41,11 @@ trait HasRole
         return $this->roles->contains('name', $role);
     }
 
+    public function hasPermission(string $permission): bool
+    {
+        return in_array($permission, $this->permissions);
+    }
+
     public function permissions(): Attribute
     {
         $result = collect();
@@ -48,13 +53,13 @@ trait HasRole
         $roles = $this->roles()->with('permissions')->get();
 
         $permission = $roles
-            ->map(fn($item) => $item->permissions->map(fn($p) => $p->label))
+            ->map(fn($item) => $item->permissions->map(fn($p) => $p->name))
             ->each(fn($item) => $result->push($item->toArray()))
             ->flatten()
             ->unique();
 
         return Attribute::make(
-            get: fn () => $permission->toArray()
+            get: fn() => $permission->toArray()
         );
     }
 }

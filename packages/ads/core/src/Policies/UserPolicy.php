@@ -3,11 +3,14 @@
 namespace Ads\Core\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
-class UserPolicy extends AbstractPolicies
+class UserPolicy
 {
-    public function view(User $user): bool
+    use HandlesAuthorization;
+
+    public function cache_clear(User $user): bool
     {
-        return $this->authorize('', $user);
+        return $user->hasPermission('cache_clear');
     }
 }

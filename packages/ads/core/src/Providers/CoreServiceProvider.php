@@ -70,6 +70,6 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
 
     public function initRoles(): void
     {
-        RolePolicies::define();
+//        RolePolicies::define();
     }
 }
