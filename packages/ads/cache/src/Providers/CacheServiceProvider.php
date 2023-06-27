@@ -17,6 +17,10 @@ class CacheServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->group(__DIR__ . './../../routes/api.php');
         }
+
+        $this->publishes([
+            __DIR__ . '/../../config/ads-logger.php' => config_path('ads-logger.php')
+        ], 'config');
     }
 
     public function register()

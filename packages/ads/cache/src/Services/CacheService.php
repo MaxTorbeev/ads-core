@@ -64,18 +64,18 @@ class CacheService
         return \cache()->{$this->rememberMethod($expirationTime)}($this->getCacheName(), $closure);
     }
 
-    public function forget(string $login = null, string $key = null): bool
+    public function forget(string $prefix = null, string $postfix = null): bool
     {
         $result = false;
 
         $query = DB::table('cache');
 
-        if ($login) {
-            $query = $query->where('key', 'LIKE', "%$login%");
+        if ($prefix) {
+            $query = $query->where('key', 'LIKE', "%$prefix%");
         }
 
-        if ($key) {
-            $query = $query->where('key', 'LIKE', "%$key%");
+        if ($postfix) {
+            $query = $query->where('key', 'LIKE', "%$postfix%");
         }
 
         return $query->delete() || $result;
