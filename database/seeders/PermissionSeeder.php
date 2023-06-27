@@ -9,7 +9,7 @@ class PermissionSeeder extends Seeder
 {
     public array $permissions = [
         [
-            'name' => 'show_user',
+            'name' => 'user_show',
             'label' => 'Просмотр пользователей'
         ],
         [

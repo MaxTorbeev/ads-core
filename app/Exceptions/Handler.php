@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -54,6 +55,9 @@ class Handler extends ExceptionHandler
 
             case AuthenticationException::class:
                 return response()->error($exception->getCode(), $data, $exception->getMessage(), 401);
+
+            case AuthorizationException::class:
+                return response()->error($exception->getCode(), $data, $exception->getMessage(), 403);
 
             default:
                 $message = !config('app.debug')

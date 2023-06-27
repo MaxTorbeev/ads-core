@@ -15,8 +15,6 @@ class UserController extends Controller
 
     public function __construct(UserService $userService)
     {
-        $this->authorizeResource(User::class, 'user');
-
         $this->userService = $userService;
     }
 

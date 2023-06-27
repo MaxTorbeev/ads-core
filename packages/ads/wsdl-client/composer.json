@@ -1,0 +1,16 @@
+{
+    "name": "ads/wsdl-client",
+    "autoload": {
+        "psr-4": {
+            "Ads\\WsdlClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ads-soft.ru"
+        }
+    ],
+    "require": {
+        "ext-soap": "*"
+    }
+}

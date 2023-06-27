@@ -28,6 +28,9 @@ class UserService
     {
         $user = $this->authService->user();
 
+        $params['parent_id'] = $user->id;
+        $params['password'] = $this->authService->cryptPassword($params['password']);
+
         return User::create($params);
     }
 
@@ -36,6 +39,10 @@ class UserService
      */
     public function update(User $user, array $params): User
     {
+        if ($params['password'] ?? false) {
+            $params['password'] = $this->authService->cryptPassword($params['password']);
+        }
+
         if ($user->update($params)) {
             return $user->refresh();
         }

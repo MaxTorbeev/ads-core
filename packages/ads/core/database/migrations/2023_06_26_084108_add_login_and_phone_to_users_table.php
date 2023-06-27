@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('login')->unique()->nullable();
-            $table->string('phone')->unique()->nullable();
+            $table->string('login')->nullable();
+            $table->string('phone')->nullable();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,8 @@ return new class extends Migration
             if (Schema::hasColumn('users', 'phone')) {
                 $table->dropColumn('phone');
             }
+
+            $table->dropSoftDeletes();
         });
     }
 };

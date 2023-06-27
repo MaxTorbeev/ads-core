@@ -60,4 +60,9 @@ class AuthService
 
         return $this->user()->tokens()->delete();
     }
+
+    public function cryptPassword(string $password): string
+    {
+        return bcrypt($password);
+    }
 }
