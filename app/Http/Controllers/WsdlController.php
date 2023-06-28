@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Ads\Cache\Services\CacheService;
 use Ads\Logger\Contracts\Logging\HttpLogger;
-use Ads\WsdClient\Services\Clients\WsdlClient;
+use Ads\WsdlClient\Services\Clients\WsdlClient;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

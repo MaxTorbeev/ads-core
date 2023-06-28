@@ -1,0 +1,15 @@
+{
+    "name": "ads/logger",
+    "autoload": {
+        "psr-4": {
+            "Ads\\Logger\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Максим Торбеев",
+            "email": "tmm@ads-soft.ru"
+        }
+    ],
+    "require": {}
+}

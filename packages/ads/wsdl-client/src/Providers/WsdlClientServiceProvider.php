@@ -1,14 +1,11 @@
 <?php
 
-namespace Ads\WsdClient\Providers;
+namespace Ads\WsdlClient\Providers;
 
-use Ads\Core\Traits\HasProvider;
 use Illuminate\Support\ServiceProvider;
 
 class WsdlClientServiceProvider extends ServiceProvider
 {
-    use HasProvider;
-
     /**
      * Bootstrap services.
      *

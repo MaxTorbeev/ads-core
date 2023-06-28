@@ -3,7 +3,7 @@
 namespace Ads\Cache\Services;
 
 use Closure;
-use Ads\WsdClient\Models\UserWs;
+use Ads\WsdlClient\Models\UserWs;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Artisan;

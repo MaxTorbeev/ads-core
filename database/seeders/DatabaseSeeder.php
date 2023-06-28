@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use Ads\Core\Seeders\PermissionSeeder;
+use Ads\Core\Seeders\RoleSeeder;
+use Ads\Core\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

@@ -2,17 +2,11 @@
 
 namespace Ads\Logger\Providers;
 
-use Ads\Core\Contracts\Provider\AdsServiceProvider;
-use Ads\Core\Observers\LogObserver;
-use Ads\Core\Traits\HasProvider;
 use Ads\Logger\Contracts\Logging\HttpLogger;
-use Ads\Logger\Models\Log;
 use Illuminate\Support\ServiceProvider;
 
-class LoggerServiceProvider extends ServiceProvider implements AdsServiceProvider
+class LoggerServiceProvider extends ServiceProvider
 {
-    use HasProvider;
-
     /**
      * Bootstrap services.
      *
@@ -21,12 +15,6 @@ class LoggerServiceProvider extends ServiceProvider implements AdsServiceProvide
     public function boot(): void
     {
         $this->initialization();
-        $this->observers();
-    }
-
-    public function register()
-    {
-
     }
 
     public function initialization(): void
@@ -38,13 +26,5 @@ class LoggerServiceProvider extends ServiceProvider implements AdsServiceProvide
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
         $this->app->singleton(HttpLogger::class, config('ads-logger.driver'));
-    }
-
-    /**
-     * Defining Observers
-     */
-    public function observers(): void
-    {
-        Log::observe(LogObserver::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ads\WsdClient\Services\Logger;
+namespace Ads\WsdlClient\Services\Logger;
 
 use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Services\Logger\AbstractDefaultLogger;

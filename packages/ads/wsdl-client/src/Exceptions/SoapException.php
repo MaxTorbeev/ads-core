@@ -1,6 +1,6 @@
 <?php
 
-namespace Ads\WsdClient\Exceptions;
+namespace Ads\WsdlClient\Exceptions;
 
 use Exception;
 

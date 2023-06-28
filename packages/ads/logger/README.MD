@@ -1,7 +1,20 @@
 # ADS logger package
 
+Добавить в composer.json:
+```json
+"require": {
+    "ads/logger": "dev-master"
+},
+"repositories": [
+    {
+        "type":"git",
+        "url": "https://{login}:{password}@gitlab.com/ads-lk/logger.git"
+    }
+]
+```
+
 * Необходимо добавить `Ads\Logger\Providers\LoggerServiceProvider` в `config/app.php`,
-* после чего выполнить `php artisan vendor:publish`
+* после чего выполнить `php artisan vendor:publish --provider="Ads\Logger\Providers\LoggerServiceProvider" --tag="config"`
 * после чего выполнить `php artisan migrate`
 
 ## Логирование запросов

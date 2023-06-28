@@ -2,13 +2,28 @@
 
 ## Установка
 
-Необходимо добавить `Ads\WsdClient\Providers\WsdlClientServiceProvider` в `config/app.php`,
+Добавить в composer.json:
+```json
+{
+  "require": {
+    "ads/wsdl": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://{login}:{password}@gitlab.com/ads-lk/wsdl.git"
+    }
+  ]
+}
+```
+
+Необходимо добавить `Ads\WsdlClient\Providers\WsdlClientServiceProvider` в `config/app.php`,
 после чего выполнить `php artisan migrate`
 
 ## Использование клиента
 
 ```php
-    use Ads\WsdClient\Services\Clients\WsdlClient;
+    use Ads\WsdlClient\Services\Clients\WsdlClient;
     
     public function index(WsdlClient $client): array|stdClass
     {

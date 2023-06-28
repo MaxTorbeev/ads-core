@@ -1,5 +1,5 @@
 {
-    "name": "ads/wsdl-client",
+    "name": "ads/wsdl",
     "autoload": {
         "psr-4": {
             "Ads\\WsdlClient\\": "src/"
@@ -7,7 +7,8 @@
     },
     "authors": [
         {
-            "name": "ads-soft.ru"
+            "name": "Торбеев Максим",
+            "email": "tmm@ads-soft.ru"
         }
     ],
     "require": {

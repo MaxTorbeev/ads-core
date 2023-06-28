@@ -3,7 +3,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Ads\\Core\\": "src/"
+            "Ads\\Core\\": "src/",
+            "Ads\\Core\\Seeders\\": "database/seeders/"
         }
     },
     "authors": [
@@ -16,5 +17,8 @@
         "php": "^8.1",
         "laravel/framework": "^10.0",
         "ext-json": "*"
-    }
+    },
+    "classmap": [
+        "database/seeds"
+    ]
 }

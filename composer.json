@@ -41,17 +41,16 @@
             "App\\": "app/",
             "Ads\\Core\\": "packages/ads/core/src/",
             "Ads\\Logger\\": "packages/ads/logger/src/",
-            "Ads\\WsdClient\\": "packages/ads/wsdl-client/src/",
+            "Ads\\WsdlClient\\": "packages/ads/wsdl-client/src/",
             "Ads\\Cache\\": "packages/ads/cache/src/",
-            "Ads\\Websocket\\": "packages/ads/websocket/src/",
+            "Ads\\Websockets\\": "packages/ads/websocket/src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/",
-            "Ads\\Core\\Tests\\": "packages/ads/core/tests/"
+            "Tests\\": "tests/"
         }
     },
     "minimum-stability": "dev",

@@ -1,5 +1,5 @@
 <?php
-namespace Ads\Websocket\Providers;
+namespace Ads\Websockets\Providers;
 
 use BeyondCode\LaravelWebSockets\WebSocketsServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +14,10 @@ class WebSocketServiceProvider extends ServiceProvider
                 ->middleware(['api', 'auth:sanctum'])
                 ->group(__DIR__ . './../../routes/api.php');
         }
+
+        $this->publishes([
+            __DIR__ . '/../../config/websockets.php' => config_path('websockets.php')
+        ], 'config');
     }
     public function register(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ads\WsdClient\Models;
+namespace Ads\WsdlClient\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;

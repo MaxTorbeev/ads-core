@@ -2,17 +2,12 @@
 
 namespace Ads\Core\Providers;
 
-use Ads\Cache\Providers\CacheServiceProvider;
-use Ads\Core\Contracts\Provider\AdsServiceProvider;
-use Ads\Core\Observers\LogObserver;
 use Ads\Core\Traits\HasProvider;
 use Ads\Logger\Contracts\Logging\HttpLogger;
-use Ads\Logger\Models\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Ads\Core\Policies\RolePolicies;
 
-class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
+class CoreServiceProvider extends ServiceProvider
 {
     use HasProvider;
 
@@ -26,8 +21,6 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     public function boot()
     {
         $this->initialization();
-        $this->observers();
-        $this->initRoles();
     }
 
     public function initialization(): void
@@ -57,18 +50,5 @@ class CoreServiceProvider extends ServiceProvider implements AdsServiceProvider
     public function register()
     {
         $this->app->register(ResponseMacroServiceProvider::class);
-    }
-
-    /**
-     * Defining Observers
-     */
-    public function observers(): void
-    {
-        Log::observe(LogObserver::class);
-    }
-
-    public function initRoles(): void
-    {
-//        RolePolicies::define();
     }
 }

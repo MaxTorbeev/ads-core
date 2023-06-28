@@ -166,8 +166,8 @@ return [
          * Package Service Providers...
          */
         Ads\Core\Providers\CoreServiceProvider::class,
-        \Ads\Logger\Providers\LoggerServiceProvider::class,
-        Ads\WsdClient\Providers\WsdlClientServiceProvider::class,
+        Ads\Logger\Providers\LoggerServiceProvider::class,
+//        Ads\WsdlClient\Providers\WsdlClientServiceProvider::class,
 
         /*
          * Application Service Providers...

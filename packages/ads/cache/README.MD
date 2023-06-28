@@ -2,9 +2,23 @@
 
 ## Установка
 
-Необходимо добавить `Ads\Cache\Providers\CacheServiceProvider` в `config/app.php`,
-после чего выполнить `php artisan vendor:publish`
-после чего выполнить `php artisan migrate`
+```json
+{
+  "require": {
+    "ads/cache": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://{login}:{password}@gitlab.com/ads-lk/cache.git"
+    }
+  ]
+}
+```
+
+* Необходимо добавить `Ads\Cache\Providers\CacheServiceProvider` в `config/app.php`,
+* после чего выполнить `php artisan vendor:publish --provider="Ads\Cache\Providers\CacheServiceProvider" --tag="config"`
+* после чего выполнить `php artisan migrate`
 
 ## Кэширование значения:
 
@@ -23,6 +37,11 @@
 
 ## Очистить кэш:
 
+### С помощью метода api
+POST:`/api/cache/flush` - Требуется роль с методом `cache_clear`
+
+### Программным способом:
+
 ```php
 (new CacheService())->forget($user->login, 'users.list')
 ```
@@ -32,17 +51,3 @@
     * Например, если указать в $prefix только логин, то будет
       очищен весь кэш этого пользователя, если указать еще и $postfix, то будет очищен этот ключ у этого пользователя.
     * Если не указывать параметры, то будет сброшен весь кэш.
-
-## Залпнированные задачи
-
-Для того, что бы очищать логи в запланированных задачах, требуется указать
-класс `Ads\Cache\ScheduledActions\LogsScheduleAction` в `app/Console/Kernel.php`
-
-```php
-$schedule->call(new LogsScheduleAction('clearOutdatedLogs'))->dailyAt('00:00');
-```
-
-Для определения срока хранения кэша, трубуется указать следующие .env конфиги:
-
-* `ADS_LOGGER_SUCCESS_STORE_DAYS` - срок хранения запросов, при обработки которых, не возникло ошибок. По умолчанию 14
-* `ADS_LOGGER_ERROR_STORE_DAYS` - срок хранения запросов, при обработки которых, возникли ошибки. По умолчанию 14

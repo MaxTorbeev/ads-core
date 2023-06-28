@@ -1,13 +1,13 @@
 <?php
 
-namespace Ads\WsdClient\Services\Clients;
+namespace Ads\WsdlClient\Services\Clients;
 
 use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Enums\LogTypes;
 use Ads\Logger\Services\Logger\LoggerParametersDto;
-use Ads\WsdClient\Exceptions\SoapException;
-use Ads\WsdClient\Models\UserWs;
-use Ads\WsdClient\Services\Logger\WsdlClientLogger;
+use Ads\WsdlClient\Exceptions\SoapException;
+use Ads\WsdlClient\Models\UserWs;
+use Ads\WsdlClient\Services\Logger\WsdlClientLogger;
 use Illuminate\Support\Facades\Auth;
 
 class WsdlClient

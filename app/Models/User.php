@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Ads\Core\Traits\HasPermission;
-use Ads\WsdClient\Traits\HasUserWs;
+use Ads\WsdlClient\Traits\HasUserWs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;

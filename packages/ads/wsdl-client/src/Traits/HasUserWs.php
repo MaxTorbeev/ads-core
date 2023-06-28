@@ -1,8 +1,8 @@
 <?php
 
-namespace Ads\WsdClient\Traits;
+namespace Ads\WsdlClient\Traits;
 
-use Ads\WsdClient\Models\UserWs;
+use Ads\WsdlClient\Models\UserWs;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait HasUserWs
