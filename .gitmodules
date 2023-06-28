@@ -1,0 +1,15 @@
+[submodule "packages/ads/core"]
+	path = packages/ads/core
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/core.git
+[submodule "packages/ads/cache"]
+	path = packages/ads/cache
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/cache.git
+[submodule "packages/ads/wsdl-client"]
+	path = packages/ads/wsdl-client
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/client.git
+[submodule "packages/ads/logger"]
+	path = packages/ads/logger
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/logger.git
+[submodule "packages/ads/websockets"]
+	path = packages/ads/websockets
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/websocket.git
