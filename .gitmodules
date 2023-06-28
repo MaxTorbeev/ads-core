@@ -6,7 +6,7 @@
 	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/cache.git
 [submodule "packages/ads/wsdl-client"]
 	path = packages/ads/wsdl-client
-	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/client.git
+	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/wsdl.git
 [submodule "packages/ads/logger"]
 	path = packages/ads/logger
 	url = https://gitlab+deploy-token-2191147:Xytrt7kUcxJUmr2zTRNN@gitlab.com/ads-lk/logger.git
