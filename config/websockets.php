@@ -61,7 +61,7 @@ return [
     /*
      * This path will be used to register the necessary routes for the package.
      */
-    'path' => 'api/websockets-dashboard',
+    'path' => 'websockets-dashboard',
 
     /*
      * Dashboard Routes Middleware
@@ -71,7 +71,7 @@ return [
      * the existing middleware. Or, you can simply stick with this list.
      */
     'middleware' => [
-        'custom.auth:api',
+        'auth:sanctum',
     ],
 
     'statistics' => [

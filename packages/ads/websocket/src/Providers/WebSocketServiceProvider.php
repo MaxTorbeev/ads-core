@@ -10,14 +10,13 @@ class WebsocketServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (file_exists(__DIR__ . '/../../routes/api.php')) {
-            Route::prefix('api/web-socket')
+            Route::prefix('api')
                 ->middleware(['api', 'auth:sanctum'])
-                ->group(__DIR__ . './../../routes/api.php')
-                ->can('');
+                ->group(__DIR__ . './../../routes/api.php');
         }
 
         $this->publishes([
-            __DIR__ . '/../../config/websocket.php' => config_path('websocket.php')
+            __DIR__ . '/../../config/websockets.php' => config_path('websockets.php')
         ], 'config');
     }
     public function register(): void

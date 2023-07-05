@@ -169,6 +169,7 @@ return [
         Ads\Cache\Providers\CacheServiceProvider::class,
         Ads\Logger\Providers\LoggerServiceProvider::class,
         Ads\WsdlClient\Providers\WsdlClientServiceProvider::class,
+        Ads\Websockets\Providers\WebSocketServiceProvider::class,
 
         /*
          * Application Service Providers...

@@ -1,5 +1,6 @@
 <?php
 
+use Ads\Websockets\Http\Controllers\NotificationsController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Arr;
 use BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize as AuthorizeDashboard;
@@ -11,3 +12,5 @@ Route::prefix(config('websockets.path'))->group(static function () {
     });
 });
 
+
+Route::get('notifications/update-page', [NotificationsController::class, 'updatePage']);
