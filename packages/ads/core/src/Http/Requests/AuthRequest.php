@@ -15,9 +15,9 @@ class AuthRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'login' => 'nullable|string',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string',
+            'login' => 'required_without_all:email,phone|nullable|string',
+            'email' => 'required_without_all:login,phone|nullable|email',
+            'phone' => 'required_without_all:login,email|nullable|string',
             'password' => 'required|string'
         ];
     }

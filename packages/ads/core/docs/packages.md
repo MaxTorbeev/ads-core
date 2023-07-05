@@ -47,4 +47,8 @@
 php artisan make:migration create_any_table --path=packages/ads/{package_name}/database/migrations
 ```
 
-
+## Поддерживаемы проекты
+* [Кэширование](https://gitlab.com/ads-lk/cache)
+* [Логирование](https://gitlab.com/ads-lk/logging)
+* [WSDL клиент](https://gitlab.com/ads-lk/wsdl)
+* [Вебсокеты](https://gitlab.com/ads-lk/websocket)

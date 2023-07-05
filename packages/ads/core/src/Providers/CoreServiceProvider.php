@@ -3,15 +3,12 @@
 namespace Ads\Core\Providers;
 
 use Ads\Core\Traits\HasProvider;
-use Ads\Logger\Contracts\Logging\HttpLogger;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CoreServiceProvider extends ServiceProvider
 {
     use HasProvider;
-
-    protected $namespace;
 
     /**
      * Bootstrap services.
@@ -33,13 +30,10 @@ class CoreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
         if (file_exists(__DIR__ . '/../../routes/api.php')) {
-            Route::prefix('api/core')
+            Route::prefix('api')
                 ->middleware('api')
-                ->namespace($this->namespace)
                 ->group(__DIR__ . './../../routes/api.php');
         }
-
-        $this->app->singleton(HttpLogger::class, config('core.logger'));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Ads\Core\Exceptions;
 
-class PermissionDoesNotExistException extends \Exception
+class PermissionDoesNotExistException extends AbstractCoreException
 {
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ads\Logger\Middleware;
+namespace Ads\Logger\Http\Middleware;
 
 use Ads\Logger\Contracts\Logging\HttpLogger;
 use Ads\Logger\Enums\LogTypes;
@@ -31,6 +31,7 @@ class ApiLoggerMiddleware
             ->setIp($request->ip())
             ->setRequest($request->all())
             ->setUri($request->path())
+            ->setMethod($request->getMethod())
             ->setUser($request->getUser());
 
         $logger = $this->logger->request($logParams);

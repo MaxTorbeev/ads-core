@@ -78,6 +78,7 @@ abstract class AbstractDefaultLogger implements HttpLogger
             : $parameters->getRequest();
 
         return [
+            'method' => $parameters->getMethod(),
             'uri' => $parameters->getUri(),
             'user_id' => $parameters->getUser()?->id,
             'ip' => $parameters->getIp(),

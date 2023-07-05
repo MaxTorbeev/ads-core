@@ -2,12 +2,15 @@
 
 namespace Ads\Core\Http\Requests;
 
+use Ads\Core\Services\User\AuthService;
 use Ads\Core\Support\Number;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
 {
+    private AuthService $authService;
+
     public function prepareForValidation()
     {
         if ($this->request->has('phone')) {
@@ -22,7 +25,7 @@ class UserRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array|string>
      */
-    public function rules(): array
+    public function rules(AuthService $authService): array
     {
         $rules = [
             'email' => 'nullable|email|unique:users,email,NULL,id,deleted_at,NULL',
@@ -31,6 +34,10 @@ class UserRequest extends FormRequest
             'name' => 'required|string',
             'password' => 'required|confirmed|min:6',
         ];
+
+        if ($authService->user()->hasPermission('can_create_main_user')) {
+            $rules['parent_id'] = 'nullable|integer';
+        }
 
         if (request()->isMethod('PATCH')) {
             $rules['password'] = 'nullable|confirmed|min:6';

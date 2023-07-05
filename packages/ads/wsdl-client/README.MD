@@ -2,23 +2,27 @@
 
 ## Установка
 
-Добавить в composer.json:
+Скачать пакет с помощью `git submodule`
+```shell
+git submodule add https://{login}:{password}@gitlab.com/ads-lk/wsld.git packages/ads/wsld
+```
+
+Добавить записи в `composer.json`,
 ```json
 {
-  "require": {
-    "ads/wsdl": "dev-master"
-  },
-  "repositories": [
-    {
-      "type": "git",
-      "url": "https://{login}:{password}@gitlab.com/ads-lk/wsdl.git"
+  "autoload": {
+    "psr-4": {
+      "Ads\\WsdlClient\\": "packages/ads/wsld/src/",
+      "Ads\\WsdlClient\\Seeders\\": "packages/ads/wsld/database/seeders/"
     }
-  ]
+  }
 }
 ```
 
 Необходимо добавить `Ads\WsdlClient\Providers\WsdlClientServiceProvider` в `config/app.php`,
 после чего выполнить `php artisan migrate`
+
+Добавить в App\Models\User.php трэйт  Ads\WsdlClient\Traits\HasUserWs
 
 ## Использование клиента
 

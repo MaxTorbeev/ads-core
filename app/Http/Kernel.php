@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use Ads\Logger\Middleware\ApiLoggerMiddleware;
+use Ads\Logger\Http\Middleware\ApiLoggerMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -42,6 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:api',
+            ApiLoggerMiddleware::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];

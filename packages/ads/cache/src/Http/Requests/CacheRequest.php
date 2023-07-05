@@ -15,8 +15,9 @@ class CacheRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user' => 'nullable|number',
+            'entity' => 'nullable|string',
             'prefix' => 'nullable|string',
-            'index' => 'nullable'
         ];
     }
 }

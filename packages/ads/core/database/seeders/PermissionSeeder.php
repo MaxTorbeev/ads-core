@@ -21,6 +21,10 @@ class PermissionSeeder extends Seeder
             [
                 'name' => 'user_delete',
                 'label' => 'Удаление пользователя'
+            ],
+            [
+                'name' => 'can_create_main_user',
+                'label' => 'Удаление пользователя'
             ]
         ];
     }

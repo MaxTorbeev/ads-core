@@ -34,15 +34,4 @@ class Log extends Model
     {
         return $this->belongsTo(User::class);
     }
-//
-//    public function setResponseAttribute($data)
-//    {
-//        $responseMaxLength = config('ads-logger.max_length', 0);
-//
-//        if ($responseMaxLength > 0) {
-//            $data = strlen(json_encode($data)) < $responseMaxLength ? $data : 'LONG_DATA';
-//        }
-//
-//        $this->attributes['response'] = json_encode($data);
-//    }
 }

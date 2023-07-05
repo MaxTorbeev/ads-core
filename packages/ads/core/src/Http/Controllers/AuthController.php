@@ -6,6 +6,7 @@ use Ads\Core\Exceptions\User\UserNotFoundException;
 use Ads\Core\Exceptions\User\UserPasswordInvalidException;
 use Ads\Core\Http\Requests\AuthRequest;
 use Ads\Core\Services\User\AuthService;
+use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -13,10 +14,12 @@ use Illuminate\Http\JsonResponse;
 class AuthController extends Controller
 {
     private AuthService $service;
+    private UserService $userService;
 
-    public function __construct(AuthService $authService)
+    public function __construct(AuthService $authService, UserService $userService)
     {
         $this->service = $authService;
+        $this->userService = $userService;
     }
 
     /**
@@ -25,19 +28,7 @@ class AuthController extends Controller
      */
     public function login(AuthRequest $request): JsonResponse
     {
-        if ($request->has('login')) {
-            $user = User::where('login', $request->login)->first();
-        } else if ($request->has('email')) {
-            $user = User::where('email', $request->email)->first();
-        } else if ($request->has('phone')) {
-            $user = User::where('phone', $request->phone)->first();
-        } else {
-            throw new UserNotFoundException();
-        }
-
-        if (!$user) {
-            throw new UserNotFoundException();
-        }
+        $user = $this->userService->userByCredential($request->validated());
 
         return response()->success(
             $this->service->login($user, $request->password)

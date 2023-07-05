@@ -1,19 +1,26 @@
 # ADS websockets package
 
-Добавить в composer.json:
-```json
-"require": {
-    "ads/websockets": "dev-master"
-},
-"repositories": [
-    {
-        "type":"git",
-        "url": "https://{login}:{password}@gitlab.com/ads-lk/websocket.git"
-    }
-]
+## Установка
+
+Скачать пакет с помощью `git submodule`
+```shell
+git submodule add https://{login}:{password}@gitlab.com/ads-lk/websocket.git packages/ads/websocket
 ```
 
-* Необходимо добавить `Ads\Websockets\Providers\WebSocketServiceProvider` в `config/app.php`,
+Добавить записи в `composer.json`,
+```json
+{
+  "autoload": {
+    "psr-4": {
+      "Ads\\Websockets\\": "packages/ads/websocket/src/",
+      "Ads\\Websockets\\Seeders\\": "packages/ads/websocket/database/seeders/"
+    }
+  }
+}
+```
+
+* Установить пакет `composer require beyondcode/laravel-websockets`
+* Необходимо добавить `Ads\Websockets\Providers\WebsocketServiceProvider` в `config/app.php`,
 * после чего выполнить `php artisan vendor:publish --provider="Ads\Websockets\Providers\WebSocketServiceProvider" --tag="config"`
 * после чего выполнить `php artisan vendor:publish --provider="BeyondCode\LaravelWebSockets\WebSocketsServiceProvider" --tag="migrations"`
 * после чего выполнить `php artisan migrate`

@@ -2,7 +2,9 @@
 
 namespace Ads\Core\Exceptions\User;
 
-class UserPasswordInvalidException extends \Exception
+use Ads\Core\Exceptions\AbstractCoreException;
+
+class UserPasswordInvalidException extends AbstractCoreException
 {
     protected $message = 'Неверный логин или пароль';
 

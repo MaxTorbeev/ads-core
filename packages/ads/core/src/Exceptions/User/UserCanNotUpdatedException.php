@@ -2,7 +2,9 @@
 
 namespace Ads\Core\Exceptions\User;
 
-class UserCanNotUpdatedException extends \Exception
+use Ads\Core\Exceptions\AbstractCoreException;
+
+class UserCanNotUpdatedException extends AbstractCoreException
 {
     protected $message = 'Пользователь не найден';
 

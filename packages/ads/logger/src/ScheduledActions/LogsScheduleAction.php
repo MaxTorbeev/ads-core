@@ -1,6 +1,6 @@
 <?php
 
-namespace Ads\Cache\ScheduledActions;
+namespace Ads\Logger\ScheduledActions;
 
 use Ads\Logger\Models\Log;
 use Carbon\Carbon;
@@ -9,9 +9,7 @@ class LogsScheduleAction
 {
     public function __invoke()
     {
-        if ($this->type == 'clearOutdatedLogs') {
-            $this->clearOutdatedLogs();
-        }
+        $this->clearOutdatedLogs();
     }
 
     /**

@@ -3,7 +3,9 @@
 namespace Ads\Core\Services\User;
 
 use Ads\Core\Exceptions\User\UserCanNotUpdatedException;
+use Ads\Core\Exceptions\User\UserNotFoundException;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class UserService
@@ -53,5 +55,27 @@ class UserService
     public function delete(User $user): bool
     {
         return $user->delete();
+    }
+
+    /**
+     * Получить модель пользователя по реквизитам
+     *
+     * @params array<string $field , string $value> $credentials - массив, где ключ - это поле в базе данных,
+     * значение - значение в этом поле.
+     * @throws UserNotFoundException
+     */
+    public function userByCredential(array $credentials): User
+    {
+        return User::where(function (Builder $query) use ($credentials) {
+            foreach ($credentials as $field => $value) {
+                if (!in_array($field, ['phone', 'email', 'login'])) {
+                    continue;
+                }
+
+                $query = $query->orWhere($field, $value);
+            }
+
+            return $query;
+        })->first() ?? throw new UserNotFoundException();
     }
 }

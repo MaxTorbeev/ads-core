@@ -2,9 +2,11 @@
 
 namespace Ads\Core\Services\User;
 
+use Ads\Core\Exceptions\User\UserNotFoundException;
 use Ads\Core\Exceptions\User\UserPasswordInvalidException;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 
 class AuthService
 {

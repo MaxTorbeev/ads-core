@@ -21,6 +21,8 @@ class LoggerParametersDto
 
     private null|int $response_code = 200;
 
+    private null|string $method = null;
+
     /**
      * @return string
      */
@@ -154,6 +156,24 @@ class LoggerParametersDto
     public function setResponseCode(?int $response_code): self
     {
         $this->response_code = $response_code;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string|null $method
+     */
+    public function setMethod(?string $method): self
+    {
+        $this->method = $method;
 
         return $this;
     }

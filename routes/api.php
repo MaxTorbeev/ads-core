@@ -1,9 +1,9 @@
 <?php
 
+use Ads\Logger\Http\Middleware\ApiLoggerMiddleware;
+use App\Http\Controllers\WsdlController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Ads\Logger\Middleware\ApiLoggerMiddleware;
-use App\Http\Controllers\WsdlController;
 
 /*
 |--------------------------------------------------------------------------
