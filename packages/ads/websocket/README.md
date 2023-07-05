@@ -44,5 +44,7 @@ stderr_logfile_maxbytes=10MB
 В .env добавить настройки
 * `VUE_APP_LARAVEL_WEBSOCKETS_PORT` - Порт для сокетов. По умолчанию 6001
 * `VUE_APP_LARAVEL_WEBSOCKETS_ENABLE_STATISTICS` - Включить/выключить статистику сокетов. По умолчанию true
+* `LARAVEL_WEBSOCKETS_SSL_LOCAL_CERT` - Путь к SSL сертификату
+* `LARAVEL_WEBSOCKETS_SSL_LOCAL_PK` - Путь к SSL ключу
 
 [Больше информации о веб сокетах](https://beyondco.de/docs/laravel-websockets/getting-started/introduction)

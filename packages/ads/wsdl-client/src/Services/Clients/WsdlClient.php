@@ -75,16 +75,16 @@ class WsdlClient
                 $loggerParams->setResponse($response)
             );
 
+            $this->handleSoapFaults($response, $loggerParams);
             $this->handleResponseError($response, $loggerParams);
 
-            return $response->return ?? throw new SoapException('Нет ответа от 1C сервера');
-
+            return $response->return ?? throw new SoapException();
         } catch (SoapFault $e) {
             $this->logger->response(
-                $loggerParams->setResponse($e->getMessage())
+                $loggerParams->setResponse($e, $e->getMessage())
             );
 
-            throw new SoapException($e->getMessage(), false);
+            throw new SoapException($e->getMessage(), $e->getCode());
         }
     }
 
@@ -106,13 +106,31 @@ class WsdlClient
     /**
      * @throws SoapException
      */
-    protected function handleResponseError($response, LoggerParametersDto $parametersDto)
+    private function handleSoapFaults($response, LoggerParametersDto $parametersDto): void
+    {
+        if (isset($response->faultstring) && trim($response->faultstring) != '') {
+            $parametersDto
+                ->setResponseCode(500)
+                ->setResponse([], '1C: ' . $response->detail);
+
+            $this->logger->response($parametersDto);
+
+            throw new SOAPException($response->detail);
+        }
+    }
+
+    /**
+     * @throws SoapException
+     */
+    private function handleResponseError($response, LoggerParametersDto $parametersDto): void
     {
         if (!empty($response->Errors)) {
             foreach ($response->Errors as $error) {
                 if ($error->Status === 'Ошибка') {
 
-                    $parametersDto->setResponseCode(500);
+                    $parametersDto
+                        ->setResponse($response)
+                        ->setResponseCode(500);
 
                     $this->logger->response($parametersDto);
 
@@ -126,14 +144,21 @@ class WsdlClient
                 foreach ($response->Error as $error) {
                     if ($error->Status === 'Ошибка') {
 
-                        $parametersDto->setResponseCode(500);
+                        $parametersDto
+                            ->setResponse($response)
+                            ->setResponseCode(500);
+
                         $this->logger->response($parametersDto);
 
                         throw new SOAPException($error->Error, true);
                     }
                 }
             } else if (trim($response->Error) !== '') {
-                $this->logger->response($this->getResponseData($logData));
+                $parametersDto
+                    ->setResponse($response)
+                    ->setResponseCode(500);
+
+                $this->logger->response($parametersDto);
 
                 throw new SOAPException($response->Error, true);
             }

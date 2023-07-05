@@ -96,9 +96,12 @@ class LoggerParametersDto
      * @param array|stdClass|string|null $response
      * @return LoggerParametersDto
      */
-    public function setResponse(array|stdClass|string|null $response): self
+    public function setResponse(array|stdClass|string|null $response, ?string $message = null): self
     {
-        $this->response = $response;
+        $this->response = [
+            'data' => $response,
+            'message' => $message
+        ] ;
 
         return $this;
     }
