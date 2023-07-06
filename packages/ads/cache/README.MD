@@ -29,8 +29,8 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/cache.git package
 
 В `database/seeders/DatabaseSeeder.php`, в метод `run()` добавить:
 ```php
-$this->call(CachePermissionSeeder::class);
-$this->call(CacheRoleSeeder::class);
+$this->call(Ads\Cache\Seeders\CachePermissionSeeder::class);
+$this->call(Ads\Cache\Seeders\CacheRoleSeeder::class);
 ```
 
 Выполнить `php artisan db:seed`

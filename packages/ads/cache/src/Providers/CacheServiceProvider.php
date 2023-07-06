@@ -2,7 +2,6 @@
 
 namespace Ads\Cache\Providers;
 
-use Illuminate\Log\LogServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,10 +20,5 @@ class CacheServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../../config/ads-logger.php' => config_path('ads-logger.php')
         ], 'config');
-    }
-
-    public function register()
-    {
-        $this->app->register(LogServiceProvider::class);
     }
 }

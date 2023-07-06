@@ -47,8 +47,10 @@
 
             "Ads\\Logger\\": "packages/ads/logger/src/",
             "Ads\\WsdlClient\\": "packages/ads/wsdl-client/src/",
-            "Ads\\Websockets\\": "packages/ads/websocket/src/",
-            "Ads\\Websockets\\Seeders\\": "packages/ads/websocket/database/seeders/",
+
+            "Ads\\Websockets\\": "packages/ads/websockets/src/",
+            "Ads\\Websockets\\Seeders\\": "packages/ads/websockets/database/seeders/",
+
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
