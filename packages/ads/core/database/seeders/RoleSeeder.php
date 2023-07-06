@@ -33,12 +33,12 @@ class RoleSeeder extends Seeder
         }
 
         foreach (Role::all() as $role) {
-            $roles = array_filter($this->getDefault(), fn($r) => $r['name'] === $role->name);
+            $defaultRoles = array_filter($this->getDefault(), fn($r) => $r['name'] === $role->name);
 
-            foreach ($roles as $defaultRole) {
+            foreach ($defaultRoles as $defaultRole) {
                 foreach ($defaultRole['permissions'] as $permission) {
 
-                    if ($role->hasPermissionTo($permission)) {
+                    if ($role->permissions->map(fn ($p) => $p->name)->contains($permission)) {
                         continue;
                     }
 
