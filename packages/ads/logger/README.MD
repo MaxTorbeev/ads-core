@@ -43,3 +43,11 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/logger.git packag
 
 Где `user.show` - название роута, так же можно указать и путь. В массиве `request` и `response` указываются поля, которые
 будут игнорированы при логировании, если в этих ключах указать `false`, то ни одно поле записано не будет.
+
+Если указать `request` или `response` - `false`, то запрос или ответ сервера логироваться не будет. 
+```php
+'user.show' => [
+    'request' => false, 
+    'response' => false,
+]
+```

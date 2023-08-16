@@ -3,11 +3,13 @@
 ## Установка
 
 Скачать пакет с помощью `git submodule`
+
 ```shell
 git submodule add https://{login}:{password}@gitlab.com/ads-lk/wsld.git packages/ads/wsld
 ```
 
 Добавить записи в `composer.json`,
+
 ```json
 {
   "autoload": {
@@ -22,7 +24,7 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/wsld.git packages
 Необходимо добавить `Ads\WsdlClient\Providers\WsdlClientServiceProvider` в `config/app.php`,
 после чего выполнить `php artisan migrate`
 
-Добавить в App\Models\User.php трэйт  Ads\WsdlClient\Traits\HasUserWs
+Добавить в App\Models\User.php трэйт Ads\WsdlClient\Traits\HasUserWs
 
 ## Использование клиента
 
@@ -44,9 +46,9 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/wsld.git packages
     }
 ```
 
-* Метод `setUser(UserWs $userWs)` - Указывает модель UserWs пользователя, в которой должны находиться основные настройки
-  для
-  соединения с WSDL по протоколу SOAP.
+* Метод `setUser(UserWs $userWs)` - Указывает модель UserWs пользователя, в которой должны находиться основные
+  настройки для соединения с WSDL по протоколу SOAP. Если не указывать setUser, то пользователь WSDL будет взят от
+  авторизированного пользователя.
 * Метод `setWsdl(string $wsdl)` - Строковое название объекта, к которому требуется обратиться
 * Метод `request(string $method, array $params = [])` - Метод отправки запроса. В значении `$method` указывать строковое
   название метода SOAP, в значении `$params` - параметры запроса.

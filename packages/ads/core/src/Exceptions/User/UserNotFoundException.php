@@ -8,5 +8,5 @@ class UserNotFoundException extends AbstractCoreException
 {
     protected $message = 'Пользователь не найден';
 
-    protected $code = 401;
+    protected $code = 404;
 }

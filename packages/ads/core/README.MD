@@ -2,12 +2,11 @@
 
 ## Установка
 
-* Необходимо добавить `Ads\Cache\Providers\CacheServiceProvider` в `config/app.php`,
+* Необходимо добавить `Ads\Core\Providers\CoreServiceProvider` в `config/app.php`,
 * после чего выполнить `php artisan vendor:publish --provider="Ads\Core\Providers\CoreServiceProvider" --tag="config"`
 * после чего выполнить `php artisan migrate`
 
-В .env файл требуется указать перменную `ADS_CORE_DEFAULT_ADMIN_PASSWORD` - в которую требуется указать пароль для
-администратора. Требуется это для первичного сидирования данных.
+В .env файл требуется указать переменную `ADS_CORE_DEFAULT_ADMIN_PASSWORD`, в которую требуется указать пароль для администратора. Требуется это для первичного сидирования данных.
 
 ## Добавление Ролей и Прав доступа
 
@@ -20,7 +19,7 @@ $this->call(Ads\Core\Seeders\UserSeeder::class);
 
 Шаблон написания имени ролей: {сущность}_{действие}, например user_create
 
-# Пользователи и авторизация
+## Пользователи и авторизация
 
 Для начала работы потребуется подключить traits к модели Models/User.php:
 
@@ -59,26 +58,24 @@ php artisan migrate:fresh --seed
 ```
 
 ## Авторизация
-* POST:`/api/core/auth/login` - Метод авторизации пользователя
+* POST:`/api/auth/login` - Метод авторизации пользователя
   * Обязательно одно из трех полей: `email`, `login`, `phone`, также необходим `password`
-* POST:`/api/core/auth/logout` - Метод logout
+* POST:`/api/auth/logout` - Метод logout
 
 ## CRUD пользовател
-* GET:`/api/core/users` - Список всех пользователей
-* POST:`/api/core/users` - Создание нового пользователя, доступные поля:
+* GET:`/api/users` - Список всех пользователей
+* POST:`/api/users` - Создание нового пользователя, доступные поля:
   * email - Электронная почта пользователя
   * phone - Номер телефона пользователя
-  * login - Логин пользвателя
+  * login - Логин пользователя
   * name - Имя пользователя
   * password - Пароль
   * password_confirmation - подтверждение пароля
-* PATCH:`/api/core/users/:ID` - Редактирование пользователя, доступные поля:
+* PATCH:`/api/users/:ID` - Редактирование пользователя, доступные поля:
   * email - Электронная почта пользователя
   * phone - Номер телефона пользователя
-  * login - Логин пользвателя
+  * login - Логин пользователя
   * name - Имя пользователя
   * password - Пароль
   * password_confirmation - подтверждение пароля
-* DELETE:`/api/core/users/:ID` - Удаление пользователя
-
-
+* DELETE:`/api/users/:ID` - Удаление пользователя

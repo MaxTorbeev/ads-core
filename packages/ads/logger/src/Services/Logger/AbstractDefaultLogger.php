@@ -40,6 +40,8 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
         $this->setExceptedFields($parameters, 'response');
 
+
+
         $responseData = $this->eraseFieldsWithEllipsis($this->exceptedFields['response'], $parameters->getResponse());
 
         $this->log->update([
@@ -90,12 +92,17 @@ abstract class AbstractDefaultLogger implements HttpLogger
     /**
      * Затереть значения полей многоточием.
      *
-     * @param array|string $fields
+     * @param array|string $fields - поля, которые требуется исключить из логирования.
+     * Если пришло значение false, в лог не будет записано ни одно поле
      * @param array|stdClass|string $data
      * @return array|string
      */
-    private function eraseFieldsWithEllipsis(array|string $fields, array|stdClass|string $data): array|string
+    private function eraseFieldsWithEllipsis(array|string|bool $fields, array|stdClass|string $data): array|string|null
     {
+        if ($fields === false) {
+            return null;
+        }
+
         if (!is_array($fields)) {
             return $data;
         }

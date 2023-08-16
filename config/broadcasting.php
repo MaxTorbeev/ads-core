@@ -32,12 +32,19 @@ return [
 
         'pusher' => [
             'driver' => 'pusher',
-            'key' => env('PUSHER_APP_KEY'),
+            'key' => env('VUE_APP_PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
+                'host' => env('APP_LARAVEL_WEBSOCKETS_HOST', '127.0.0.1'),
+                'port' => env('VUE_APP_LARAVEL_WEBSOCKETS_PORT', 6001),
+                'scheme' => !!env('APP_LARAVEL_WEBSOCKETS_SSL_ENABLED') ? 'https' : 'http',
+                'encrypted' => !!env('APP_LARAVEL_WEBSOCKETS_SSL_ENABLED', false),
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYHOST => env('LARAVEL_WEBSOCKETS_SSL_VERIFY_PEER', 2),
+                    CURLOPT_SSL_VERIFYPEER => env('LARAVEL_WEBSOCKETS_SSL_VERIFY_PEER', 2),
+                ],
             ],
         ],
 

@@ -23,8 +23,8 @@ class PermissionSeeder extends Seeder
                 'label' => 'Удаление пользователя'
             ],
             [
-                'name' => 'can_create_main_user',
-                'label' => 'Удаление пользователя'
+                'name' => 'user_hierarchy',
+                'label' => 'Пользователь может создавать и управлять подчиненными пользователями'
             ]
         ];
     }

@@ -8,7 +8,6 @@ use Ads\Core\Http\Requests\AuthRequest;
 use Ads\Core\Services\User\AuthService;
 use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
@@ -23,6 +22,8 @@ class AuthController extends Controller
     }
 
     /**
+     * Auth user by request.
+     *
      * @throws UserNotFoundException
      * @throws UserPasswordInvalidException
      */

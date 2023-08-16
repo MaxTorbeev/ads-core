@@ -25,7 +25,7 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/cache.git package
 * Необходимо добавить `Ads\Cache\Providers\CacheServiceProvider` в `config/app.php`,
 * После чего выполнить `php artisan vendor:publish --provider="Ads\Cache\Providers\CacheServiceProvider" --tag="config"`
 * После чего выполнить `php artisan migrate`
-* Добавить кэш драйвер `CACHE_DRIVER=database`
+* Добавить кэш драйвер  `CACHE_DRIVER=database`
 
 В `database/seeders/DatabaseSeeder.php`, в метод `run()` добавить:
 ```php
@@ -34,6 +34,14 @@ $this->call(Ads\Cache\Seeders\CacheRoleSeeder::class);
 ```
 
 Выполнить `php artisan db:seed`
+
+## Политики доступа
+
+В политику `Ads\Core\Policies\UserPolicy` добавить trait `HasCacheUserPolicy`
+
+```php
+use Ads\Cache\Traits\HasCacheUserPolicy
+````
 
 ## Кэширование значения:
 
@@ -85,3 +93,5 @@ POST:`/api/cache/flush` - Требуется роль с методом `cache_c
     ->setParams(['filter' => ['id' => 1]])->forget($user->login, 'users.list')
     ->get();
 ```
+
+

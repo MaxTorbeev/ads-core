@@ -18,7 +18,11 @@ class UserService
 
     public function index(array $params = []): Collection
     {
-        return User::all();
+        if ($this->authService->user()->hasPermission('user_show')) {
+            return User::all();
+        }
+
+        return $this->authService->user()->children;
     }
 
     public function show(User $user): User
@@ -26,11 +30,20 @@ class UserService
         return $user;
     }
 
+    /**
+     * Store new user.
+     *
+     * @param array $params
+     * @return User
+     */
     public function store(array $params = []): User
     {
         $user = $this->authService->user();
 
-        $params['parent_id'] = $user->id;
+        if (!array_key_exists('parent_id', $params)) {
+            $params['parent_id'] = $user->id;
+        }
+
         $params['password'] = $this->authService->cryptPassword($params['password']);
 
         return User::create($params);
@@ -77,5 +90,18 @@ class UserService
 
             return $query;
         })->first() ?? throw new UserNotFoundException();
+    }
+
+    /**
+     * Getting auth user with permissions, roles and other info.
+     *
+     * @return User
+     */
+    public function info(): User
+    {
+        return $this->authService
+            ->user()
+            ->setAppends(['permissions'])
+            ->load('roles');
     }
 }

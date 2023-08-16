@@ -3,6 +3,7 @@
 namespace Ads\Core\Http\Controllers;
 
 use Ads\Core\Http\Requests\UserRequest;
+use Ads\Core\Services\User\AuthService;
 use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -13,9 +14,12 @@ class UserController extends Controller
 {
     private UserService $userService;
 
-    public function __construct(UserService $userService)
+    private AuthService $authService;
+
+    public function __construct(UserService $userService, AuthService $authService)
     {
         $this->userService = $userService;
+        $this->authService = $authService;
     }
 
     public function index(Request $request): JsonResponse
@@ -51,5 +55,15 @@ class UserController extends Controller
         return response()->success(
             $this->userService->delete($user)
         );
+    }
+
+    /**
+     * Getting info about auth user.
+     *
+     * @return JsonResponse
+     */
+    public function info(): JsonResponse
+    {
+        return response()->success($this->userService->info());
     }
 }

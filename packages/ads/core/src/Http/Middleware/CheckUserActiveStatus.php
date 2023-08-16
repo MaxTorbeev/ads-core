@@ -25,14 +25,18 @@ class CheckUserActiveStatus
      * @return mixed
      * @throws AuthorizationException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
-        $user = $this->authService->user();
+        if ($this->authService->check()) {
+            $user = $this->authService->user();
 
-        if ($user instanceof Authenticatable && $user->is_active) {
-            return $next($request);
+            if ($user instanceof Authenticatable && $user->is_active) {
+                return $next($request);
+            }
+
+            throw new AuthorizationException();
         }
 
-        throw new AuthorizationException();
+        return $next($request);
     }
 }

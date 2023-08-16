@@ -61,7 +61,7 @@ return [
     /*
      * This path will be used to register the necessary routes for the package.
      */
-    'path' => 'api/websockets-dashboard',
+    'path' => 'websockets/dashboard',
 
     /*
      * Dashboard Routes Middleware

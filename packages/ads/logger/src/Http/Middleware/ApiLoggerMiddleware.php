@@ -27,7 +27,7 @@ class ApiLoggerMiddleware
     public function handle(Request $request, Closure $next): mixed
     {
         $logParams = (new LoggerParametersDto())
-            ->setType(LogTypes::HTTP->value)
+            ->setType(LogTypes::API->value)
             ->setIp($request->ip())
             ->setRequest($request->all())
             ->setUri($request->path())

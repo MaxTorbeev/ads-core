@@ -4,6 +4,7 @@ namespace Ads\Core\Traits;
 
 use Ads\Core\Models\Permission;
 use Ads\Core\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
@@ -14,7 +15,7 @@ trait HasRole
      */
     public function roles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class)->select(['id', 'label', 'name']);
     }
 
     /**
@@ -41,25 +42,63 @@ trait HasRole
         return $this->roles->contains('name', $role);
     }
 
+    /**
+     * User has permission.
+     *
+     * @param string $permission
+     * @return bool
+     */
     public function hasPermission(string $permission): bool
     {
         return in_array($permission, $this->permissions);
     }
 
-    public function permissions(): Attribute
+    public function collectPermissions(): array
     {
         $result = collect();
 
         $roles = $this->roles()->with('permissions')->get();
 
-        $permission = $roles
+        return $roles
             ->map(fn($item) => $item->permissions->map(fn($p) => $p->name))
             ->each(fn($item) => $result->push($item->toArray()))
             ->flatten()
-            ->unique();
+            ->unique()
+            ->toArray();
+    }
+
+    /**
+     * Get permissions from parent user.
+     *
+     * @return array
+     */
+    public function permissionsFromParent(): array
+    {
+        /** @var User $parent */
+        $parent = $this;
+
+        while ($parent->parent && count($parent->parent->permissions)) {
+            $parent = $parent->parent;
+        }
+
+        return $parent->permissions ?? [];
+    }
+
+    /**
+     * Get all permissions for user
+     *
+     * @return Attribute<array>
+     */
+    public function permissions(): Attribute
+    {
+        $permissions = $this->collectPermissions();
+
+        if (!count($permissions)) {
+            $permissions = $this->permissionsFromParent();
+        }
 
         return Attribute::make(
-            get: fn() => $permission->toArray()
+            get: fn() => $permissions
         );
     }
 }

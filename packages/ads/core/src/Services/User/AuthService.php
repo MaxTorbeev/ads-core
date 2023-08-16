@@ -2,20 +2,28 @@
 
 namespace Ads\Core\Services\User;
 
-use Ads\Core\Exceptions\User\UserNotFoundException;
 use Ads\Core\Exceptions\User\UserPasswordInvalidException;
 use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Builder;
 
 class AuthService
 {
     /**
+     * Check auth user
+     *
+     * @return bool
+     */
+    public function check(): bool
+    {
+        return auth('sanctum')->check();
+    }
+
+    /**
      * Getting auth user.
      *
-     * @return Authenticatable
+     * @return Authenticatable|User
      */
-    public function user(): Authenticatable
+    public function user(): Authenticatable|User
     {
         return auth('sanctum')->user();
     }
@@ -32,7 +40,7 @@ class AuthService
 
             return array_merge(
                 $user
-                    ->setHidden(['created_at', 'updated_at', 'user_ws_id', 'parent_id', 'password', 'email_verified_at', 'remember_token'])
+                    ->setHidden(['created_at', 'parent', 'updated_at', 'user_ws_id', 'parent_id', 'password', 'email_verified_at', 'remember_token'])
                     ->setAppends(['permissions'])
                     ->makeHidden('tokens')
                     ->toArray(),

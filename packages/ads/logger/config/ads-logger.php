@@ -29,6 +29,12 @@ return [
         |   ]
         | 'broadcasting/auth' => false, // Логирование полностью отключено для этого URI
         */
+        'login' => [
+            'request' => [
+                'password'
+            ],
+            'response' => false
+        ],
         'user.store' => [
             'request' => [
                 'password',

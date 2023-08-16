@@ -1,16 +1,12 @@
 <?php
 
-use Ads\Logger\Services\Logger\DefaultHttpLogger;
-
 return [
     /*
     |--------------------------------------------------------------------------
     | Logger configs
     |--------------------------------------------------------------------------
     */
-    'driver' => DefaultHttpLogger::class,
-
-    'max_length' => 1024,
+    'driver' => \Ads\Logger\Services\Logger\DefaultHttpLogger::class,
 
     'success_store_days' => env('ADS_LOGGER_SUCCESS_STORE_DAYS', 14),
 
@@ -28,16 +24,16 @@ return [
         |       'request' => [
         |           'Confidence.Document'
         |       ],
+        |       request' => false, // Не записывать в логи входящие данные
+        |       response' => false, // Не записывать в логи исходящие данные
         |   ]
         | 'broadcasting/auth' => false, // Логирование полностью отключено для этого URI
         */
-        'user.show' => [
+        'login' => [
             'request' => [
-                'password',
+                'password'
             ],
-            'response' => [
-                'password',
-            ],
+            'response' => false
         ],
         'user.store' => [
             'request' => [
