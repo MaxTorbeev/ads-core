@@ -24,7 +24,7 @@ git submodule add https://{login}:{password}@gitlab.com/ads-lk/logger.git packag
 * после чего выполнить `php artisan migrate`
 
 ## Логирование запросов
-В `app/Http/Kernel.php` `api` должен быть добавлен `Ads\Logger\Middleware\ApiLoggerMiddleware::class` 
+В `app/Http/Kernel.php` `api` должен быть добавлен `\Ads\Logger\Http\Middleware\ApiLoggerMiddleware::class` 
 
 ## Исключение из логирование
 

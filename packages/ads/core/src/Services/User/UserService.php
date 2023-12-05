@@ -18,11 +18,15 @@ class UserService
 
     public function index(array $params = []): Collection
     {
+        $auth = $this->authService->user();
+
         if ($this->authService->user()->hasPermission('user_show')) {
-            return User::all();
+            return User::query()->whereNot('id', $auth->id)->get();
         }
 
-        return $this->authService->user()->children;
+        return User::query()
+            ->whereIn('id', $auth->childrenIds())
+            ->get();
     }
 
     public function show(User $user): User
@@ -38,36 +42,125 @@ class UserService
      */
     public function store(array $params = []): User
     {
-        $user = $this->authService->user();
-
-        if (!array_key_exists('parent_id', $params)) {
-            $params['parent_id'] = $user->id;
-        }
-
-        $params['password'] = $this->authService->cryptPassword($params['password']);
-
-        return User::create($params);
+        return $this->createOrUpdate($params);
     }
 
     /**
-     * @throws UserCanNotUpdatedException
+     * Update exists user
+     *
+     * @param User $user
+     * @param array $params
+     * @return User
      */
     public function update(User $user, array $params): User
     {
-        if ($params['password'] ?? false) {
+        return $this->createOrUpdate($params, $user);
+    }
+
+    /**
+     * Create or update user.
+     *
+     * @param array $params
+     * @param User|null $user
+     * @return User
+     * @throws UserCanNotUpdatedException
+     */
+    private function createOrUpdate(array $params, ?User $user = null): User
+    {
+        $auth = $this->authService->user();
+
+        if ($auth->hasPermission('user_create')) {
+            // Если у авторизированного пользователя есть permission user_create,
+            // то новому пользователю будет указан parent_id
+            $params['parent_id'] = $params['parent_id'] ?? null;
+        } else {
+            // Если у авторизированного пользователя нет permission user_create,
+            // То новому пользователю будет указан parent_id равный id создателю
+            $params['parent_id'] = $auth->id;
+        }
+
+        if (!empty($params['password'])) {
             $params['password'] = $this->authService->cryptPassword($params['password']);
         }
 
-        if ($user->update($params)) {
-            return $user->refresh();
+        $this->checkTrashedUser($params);
+
+        if (is_null($user)) {
+            $user = User::create($params);
+        } else {
+
+            if ($params['parent_id'] && $user->canAttemptParentId($params['parent_id'])) {
+                throw new UserCanNotUpdatedException('Указан неверный идентификатор родительского пользователя');
+            }
+
+            $user->update($params);
+            $user->refresh();
         }
 
-        throw new UserCanNotUpdatedException();
+        if (isset($params['roles'])) {
+            $user->syncRoles($params['roles']);
+        }
+
+        return $user;
     }
 
+    /**
+     * Check trashed users and set unique fields.
+     *
+     * @param $params
+     * @return void
+     */
+    public function checkTrashedUser($params): void
+    {
+        $uniqueField = ['login', 'email', 'phone'];
+
+        foreach ($uniqueField as $field) {
+            if (!isset($params[$field])) {
+                continue;
+            }
+
+            $value = $params[$field];
+
+            if ($user = $this->getUserByFieldAndNotNull($field, $value, true)) {
+                do {
+                    // Поле phone - будет очищено, если будет совпадение.
+                    // К остальным в начало будет добавлен _
+                    $value = $field !== 'phone'
+                        ? '_' . $value
+                        : null;
+
+                } while ($this->getUserByFieldAndNotNull($field, $value));
+
+                $user->{$field} = $value;
+
+                $user->save();
+            }
+        }
+    }
+
+    private function getUserByFieldAndNotNull(string $field, mixed $value, bool $isOnlyTrashed = false): mixed
+    {
+        $user = $isOnlyTrashed
+            ? User::onlyTrashed()
+            : User::withTrashed();
+
+        return $user->where($field, $value)->whereNotNull($field)->first();
+    }
+
+    /**
+     * Delete user.
+     *
+     * @throws UserCanNotUpdatedException
+     */
     public function delete(User $user): bool
     {
-        return $user->delete();
+        // Дополнительная проверка, во избежании удалении собственного пользователя
+        // или пользователя вне своей иерархии
+        if ($this->authService->user()->can('user_delete', $user)) {
+            return $user->delete();
+        }
+
+        throw new UserCanNotUpdatedException('Не удалось удалить пользователя');
     }
 
     /**
@@ -99,9 +192,6 @@ class UserService
      */
     public function info(): User
     {
-        return $this->authService
-            ->user()
-            ->setAppends(['permissions'])
-            ->load('roles');
+        return $this->authService->user()->setAppends(['permissions', 'roles']);
     }
 }

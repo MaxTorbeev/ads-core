@@ -4,6 +4,7 @@ namespace Ads\Core\Models;
 
 use Ads\Core\Exceptions\PermissionDoesNotExistException;
 use Ads\Core\Traits\HasRole;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,5 +28,23 @@ class Permission extends Model
         }
 
         return $permission;
+    }
+
+    public function scopeByCredentials(Builder $query, array $roles): Builder
+    {
+        $ids = array_filter($roles, fn ($item) => is_numeric($item));
+        $names = array_filter($roles, fn ($item) => is_string($item));
+
+        return $query->where(function (Builder $builder) use ($ids, $names) {
+            if (!empty($ids)) {
+                $builder = $builder->orWhereIn('id', $ids);
+            }
+
+            if (!empty($names)) {
+                $builder = $builder->orWhereIn('name', $names);
+            }
+
+            return $builder;
+        });
     }
 }

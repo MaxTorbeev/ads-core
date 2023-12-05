@@ -8,4 +8,5 @@ enum LogTypes: string
     case WEB = 'web';
     case API = 'api';
     case SOAP = 'soap';
+    case SYSTEM = 'system';
 }

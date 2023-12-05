@@ -3,6 +3,7 @@
 namespace Ads\Core\Http\Controllers;
 
 use Ads\Core\Http\Requests\UserRequest;
+use Ads\Core\Http\Resources\UserResource;
 use Ads\Core\Services\User\AuthService;
 use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
@@ -25,28 +26,28 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         return response()->success(
-            $this->userService->index($request->all())
+            UserResource::collection($this->userService->index($request->all()))
         );
     }
 
     public function show(User $user): JsonResponse
     {
         return response()->success(
-            $this->userService->show($user)
+            new UserResource($this->userService->show($user))
         );
     }
 
     public function store(UserRequest $request): JsonResponse
     {
         return response()->success(
-            $this->userService->store($request->validated())
+            new UserResource($this->userService->store($request->validated()))
         );
     }
 
     public function update(User $user, UserRequest $request): JsonResponse
     {
         return response()->success(
-            $this->userService->update($user, $request->validated())
+            new UserResource($this->userService->update($user, $request->validated()))
         );
     }
 
@@ -64,6 +65,6 @@ class UserController extends Controller
      */
     public function info(): JsonResponse
     {
-        return response()->success($this->userService->info());
+        return response()->success(new UserResource($this->userService->info()));
     }
 }

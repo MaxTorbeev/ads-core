@@ -33,19 +33,14 @@ class AuthService
      *
      * @throws UserPasswordInvalidException
      */
-    public function login(User $user, string $password): array
+    public function login(User $user, string $password): User
     {
         if ($user->passwordIsValid($password)) {
             $token = $this->auth($user);
 
-            return array_merge(
-                $user
-                    ->setHidden(['created_at', 'parent', 'updated_at', 'user_ws_id', 'parent_id', 'password', 'email_verified_at', 'remember_token'])
-                    ->setAppends(['permissions'])
-                    ->makeHidden('tokens')
-                    ->toArray(),
-                ['token' => $token],
-            );
+            return $user
+                ->setAppends(['permissions'])
+                ->setAttribute('token', $token);
         }
 
         throw new UserPasswordInvalidException('Неверный email или пароль');
@@ -62,6 +57,12 @@ class AuthService
         return $user->createToken('auth-token')->plainTextToken;
     }
 
+    /**
+     * Logout user.
+     *
+     * @param User|null $user
+     * @return bool
+     */
     public function logout(User|null $user = null): bool
     {
         if ($user) {
@@ -71,6 +72,12 @@ class AuthService
         return $this->user()->tokens()->delete();
     }
 
+    /**
+     * Crypt password by bcrypt.
+     *
+     * @param string $password
+     * @return string
+     */
     public function cryptPassword(string $password): string
     {
         return bcrypt($password);

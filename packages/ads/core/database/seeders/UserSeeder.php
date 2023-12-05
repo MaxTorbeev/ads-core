@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                 ? User::whereLogin($userData['login'])->first()
                 : User::create($userData);
 
-            $user->assignRoles($roles);
+            $user->syncRoles($roles);
         }
     }
 }

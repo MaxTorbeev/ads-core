@@ -2,21 +2,20 @@
 
 namespace Ads\Core\Models;
 
+use Ads\Core\Traits\HasHierarchy;
 use Ads\Core\Traits\HasPassword;
 use Ads\Core\Traits\HasPermission;
 use Ads\Core\Traits\HasRole;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRole, HasPermission, HasPassword, HasApiTokens;
-
+    use HasFactory, Notifiable, HasRole, HasPermission, HasPassword, HasHierarchy, HasApiTokens, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -41,7 +40,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'parent'
+        'parent',
+        'default_roles'
     ];
 
     /**
@@ -53,43 +53,37 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $with = [
-        'roles'
+    protected $appends = [
+        'roles',
+        'permissions',
+        'is_active'
     ];
 
     /**
-     * Parent record relationship
+     * Override is_active model attribute.
      *
-     * @return BelongsTo
+     * @description Если в собственной модели и у родителей есть is_active - false,
+     * то пользователь не считается активным
+     *
+     * @return Attribute
      */
-    public function parent(): BelongsTo
+    public function isActive(): Attribute
     {
-        return $this->belongsTo(User::class, 'parent_id');
+        $is_active = !User::whereIn('id', $this->parentIds(true))->where('is_active', 0)->exists();
+
+        return Attribute::make(
+            get: fn() => $is_active
+        );
     }
 
-    public function children(): HasMany
+    /**
+     * Может ли пользователю применить parent_id.
+     *
+     * @param $id
+     * @return bool
+     */
+    public function canAttemptParentId($id): bool
     {
-        return $this->hasMany(self::class, 'parent_id');
-    }
-
-    public function childrenIds(?User $user = null, bool $hierarchical = true): Collection
-    {
-        $ids = collect();
-
-        $userId = is_null($user)
-            ? $this->id
-            : $user;
-
-        $query = User::select('id')->where('parent_id', $userId)->get();
-
-        foreach ($query as $child) {
-            $ids->push($child->id);
-
-            if ($hierarchical) {
-                $ids = $ids->merge($this->childrenIds($child, $hierarchical));
-            }
-        }
-
-        return $ids;
+        return !self::where('id', $id)->whereNot('id', $this->id)->exists();
     }
 }

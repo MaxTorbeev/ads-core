@@ -52,6 +52,8 @@
             "Ads\\Websockets\\": "packages/ads/websockets/src/",
             "Ads\\Websockets\\Seeders\\": "packages/ads/websockets/database/seeders/",
 
+            "Ads\\Front\\": "packages/ads/front/src/",
+
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }

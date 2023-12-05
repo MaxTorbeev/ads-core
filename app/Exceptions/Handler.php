@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Ads\Logger\Contracts\Logging\HttpLogger;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -48,7 +49,7 @@ class Handler extends ExceptionHandler
             case ModelNotFoundException::class:
             case MethodNotAllowedHttpException::class :
             case NotFoundHttpException::class :
-                return response()->error(404, $data, $exception->getMessage());
+                return response()->error(404, $data, $exception->getMessage(), 404);
 
             case ValidationException::class:
                 return response()->error($exception->getCode(), $data, $exception->validator->errors()->first(), 422);
@@ -75,6 +76,8 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        //
+        $this->reportable(function (Throwable $e) {
+
+        });
     }
 }

@@ -15,6 +15,13 @@ class RoleSeeder extends Seeder
                 'name' => 'admin',
                 'label' => 'Администратор',
                 'permissions' => array_map(fn ($item) => $item['name'], (new PermissionSeeder())->getDefault())
+            ],
+            [
+                'name' => 'editor',
+                'label' => 'Редактор',
+                'permissions' => [
+                    'user_hierarchy',
+                ]
             ]
         ];
     }
@@ -36,14 +43,7 @@ class RoleSeeder extends Seeder
             $defaultRoles = array_filter($this->getDefault(), fn($r) => $r['name'] === $role->name);
 
             foreach ($defaultRoles as $defaultRole) {
-                foreach ($defaultRole['permissions'] as $permission) {
-
-                    if ($role->permissions->map(fn ($p) => $p->name)->contains($permission)) {
-                        continue;
-                    }
-
-                    $role->givePermissionTo(Permission::whereName($permission)->first());
-                }
+                $role->syncPermissions($defaultRole['permissions']);
             }
         }
     }

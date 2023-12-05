@@ -26,30 +26,44 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
         $this->setExceptedFields($parameters);
 
-
-        $this->log = Log::create($this->formatRequest($parameters));
+        $this->log = (new Log())->fill($this->formatRequest($parameters));
 
         return $this;
     }
 
     public function response(LoggerParametersDto $parameters): self
     {
+        // Исключить из логирование по http статусам
+        if (in_array($parameters->getResponseCode(), config('ads-logger.except_code_statuses', []))) {
+            return $this;
+        }
+
+        // Если в логах указано записывать только ошибку и в статус-коде ошибки нет, то не записывать лог
+        if ($this->isOnlyError() && !$this->isErrorByCode($parameters->getResponseCode())) {
+            return $this;
+        }
+
         if (!$this->canCreateLog($parameters)) {
             return $this;
         }
 
         $this->setExceptedFields($parameters, 'response');
 
-
-
         $responseData = $this->eraseFieldsWithEllipsis($this->exceptedFields['response'], $parameters->getResponse());
 
-        $this->log->update([
-            'response' => $responseData,
-            'executing_time' => $parameters->getExecutingTime(),
-            'user_id' => $parameters->getUser()?->id,
-            'response_code' => $parameters->getResponseCode()
-        ]);
+        $this->log->fill(
+            array_merge(
+                $this->formatRequest($parameters),
+                [
+                    'response' => $responseData,
+                    'executing_time' => $parameters->getExecutingTime(),
+                    'user_id' => $parameters->getUser()?->id,
+                    'response_code' => $parameters->getResponseCode()
+                ]
+            )
+        );
+
+        $this->log->save();
 
         return $this;
     }
@@ -60,10 +74,17 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
         $routeName = Route::currentRouteName();
 
-        if (isset (config('ads-logger.except')[$routeName]) && isset(config('ads-logger.except')[$routeName][$scope])) {
-            $this->exceptedFields[$scope] = config('ads-logger.except')[$routeName][$scope];
-        } else if (isset(config('ads-logger.except')[$parameters->getUri()][$scope])) {
-            $this->exceptedFields[$scope] = config('ads-logger.except')[$parameters->getUri()][$scope];
+        $config = config('ads-logger.except')[$routeName]
+            ?? config('ads-logger.except')[$parameters->getUri()]
+            ?? null;
+
+        if (!$config)
+            return;
+
+        if (in_array('onlyErrors', $config)) {
+            $this->exceptedFields['onlyErrors'] = $config['onlyErrors'];
+        } else if ($config[$scope] ?? false) {
+            $this->exceptedFields[$scope] = $config[$scope];
         }
     }
 
@@ -92,10 +113,10 @@ abstract class AbstractDefaultLogger implements HttpLogger
     /**
      * Затереть значения полей многоточием.
      *
-     * @param array|string $fields - поля, которые требуется исключить из логирования.
+     * @param array|string|bool $fields - поля, которые требуется исключить из логирования.
      * Если пришло значение false, в лог не будет записано ни одно поле
      * @param array|stdClass|string $data
-     * @return array|string
+     * @return array|string|null
      */
     private function eraseFieldsWithEllipsis(array|string|bool $fields, array|stdClass|string $data): array|string|null
     {
@@ -134,5 +155,15 @@ abstract class AbstractDefaultLogger implements HttpLogger
 
         return (!isset($configs[$routeName]) || isset($configs[$routeName]) && $configs[$routeName] !== false)
             && (!isset($configs[$uri]) || isset($configs[$uri]) && $configs[$uri] !== false);
+    }
+
+    public function isOnlyError(): bool
+    {
+        return $this->exceptedFields['onlyErrors'] ?? false;
+    }
+
+    public function isErrorByCode(int $code): bool
+    {
+        return in_array($code, range(400, 599));
     }
 }

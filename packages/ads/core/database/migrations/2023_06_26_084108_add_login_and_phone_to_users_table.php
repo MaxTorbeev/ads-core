@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('login')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('login')->unique()->nullable();
+            $table->string('phone')->index()->nullable();
 
             $table->boolean('is_active')->default(true);
             $table->softDeletes();

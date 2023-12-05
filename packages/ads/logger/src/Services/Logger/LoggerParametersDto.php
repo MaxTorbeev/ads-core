@@ -3,6 +3,7 @@
 namespace Ads\Logger\Services\Logger;
 
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use stdClass;
 
 class LoggerParametersDto
@@ -13,7 +14,7 @@ class LoggerParametersDto
 
     private array $request;
 
-    private array|stdClass|string|null $response;
+    private $response;
 
     private null|string $ip = null;
 
@@ -87,21 +88,22 @@ class LoggerParametersDto
     /**
      * @return array|stdClass|string|null
      */
-    public function getResponse(): array|stdClass|string|null
+    public function getResponse()
     {
         return $this->response;
     }
 
     /**
-     * @param array|stdClass|string|null $response
+     * @param mixed $response
+     * @param string|null $message
      * @return LoggerParametersDto
      */
-    public function setResponse(array|stdClass|string|null $response, ?string $message = null): self
+    public function setResponse(mixed $response, ?string $message = null): self
     {
         $this->response = [
             'data' => $response,
             'message' => $message
-        ] ;
+        ];
 
         return $this;
     }

@@ -22,8 +22,12 @@ class CoreServiceProvider extends ServiceProvider
 
     public function initialization(): void
     {
+        $this->loadTranslationsFrom(__DIR__ . '/../../resources/lang', 'core');
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'core');
+
         $this->publishes([
-            __DIR__ . '/../../config/core.php' => config_path('core.php')
+            __DIR__ . '/../../config/core.php' => config_path('core.php'),
+            __DIR__ . '/../../resources/lang' => $this->app->langPath('core'),
         ], 'config');
 
         //Migration

@@ -12,6 +12,9 @@ return [
 
     'error_store_days' => env('ADS_LOGGER_ERROR_STORE_DAYS', 14),
 
+    // Перечисленные HTTP статусы не будут записаны в лог
+    'except_code_statuses' => [404, 403, 401],
+
     'except' => [
         /*
         |--------------------------------------------------------------------------
@@ -30,11 +33,9 @@ return [
         | 'broadcasting/auth' => false, // Логирование полностью отключено для этого URI
         */
         'login' => [
-            'request' => [
-                'password'
-            ],
-            'response' => false
+            'onlyErrors' => true
         ],
+        'logout' => false,
         'user.store' => [
             'request' => [
                 'password',

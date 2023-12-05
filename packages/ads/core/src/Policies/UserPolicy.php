@@ -15,7 +15,7 @@ class UserPolicy
             return true;
         }
 
-        return $this->hierarchyPermission($user, $child);
+        return $this->hierarchyPermission($user, $child, true);
     }
 
     public function user_show(User $user, ?User $child = null): bool
@@ -24,13 +24,13 @@ class UserPolicy
             return true;
         }
 
-        return $this->hierarchyPermission($user, $child);
+        return $this->hierarchyPermission($user, $child, true);
     }
 
     public function user_delete(User $user, User $child): bool
     {
         if ($user->hasPermission('user_delete')) {
-            return true;
+            return $user->id !== $child->id;
         }
 
         return $this->hierarchyPermission($user, $child);
@@ -41,18 +41,19 @@ class UserPolicy
      *
      * @param User $user
      * @param User|null $child
+     * @param bool $withSelf - если true, то в проверке будет учавствовать id авторизованного пользователя.
      * @return bool
      */
-    private function hierarchyPermission(User $user, ?User $child): bool
+    private function hierarchyPermission(User $user, ?User $child, bool $withSelf = false): bool
     {
         // проверяем, может ли пользователь создавать подчиненных
         if (!$child) {
             return $user->hasPermission('user_hierarchy');
         }
 
-        // проверяем, является ли переданный пользователь подчиненным у основного
+        // проверяем, является ли переданный пользователь в подчинении у основного
         if ($user->hasPermission('user_hierarchy')) {
-            return $user->childrenIds()->contains($child->id);
+            return $child->parentIds($withSelf)->contains($user->id);
         }
 
         return false;

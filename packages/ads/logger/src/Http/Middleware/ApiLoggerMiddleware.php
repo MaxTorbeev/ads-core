@@ -46,7 +46,10 @@ class ApiLoggerMiddleware
 
         $logger->response(
             $logParams
-                ->setResponse($response->original['data'] ?? $response->original)
+                ->setResponse(
+                    $response->original['data'] ?? $response->original,
+                    $response->original['message'] ?? null
+                )
                 ->setUser(auth()->user())
         );
 

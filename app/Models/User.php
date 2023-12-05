@@ -2,51 +2,7 @@
 
 namespace App\Models;
 
-use Ads\Core\Traits\HasPermission;
-use Ads\WsdlClient\Traits\HasUserWs;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Ads\Core\Traits\HasRole;
-use Ads\Core\Traits\HasPassword;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends \Ads\Core\Models\User
 {
-    use HasFactory, Notifiable, HasUserWs, HasRole, HasPermission, HasPassword, HasApiTokens;
-
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name',
-        'phone',
-        'login',
-        'email',
-        'password',
-        'parent_id',
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
 }

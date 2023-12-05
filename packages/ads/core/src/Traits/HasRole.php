@@ -2,33 +2,26 @@
 
 namespace Ads\Core\Traits;
 
-use Ads\Core\Models\Permission;
 use Ads\Core\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 trait HasRole
 {
     /**
      * A user may have multiple roles.
      */
-    public function roles(): BelongsToMany
+    public function defaultRoles(): BelongsToMany
     {
-        return $this->belongsToMany(Role::class)->select(['id', 'label', 'name']);
-    }
+        // Если пользователь имеет родителя,
+        // то роль берется от главного родителя
+        if ($this->parent_id) {
+            return $this->root()->defaultRoles();
+        }
 
-    /**
-     * Assign the given role to the user.
-     *
-     * @param array $roles
-     * @return array
-     */
-    public function assignRoles(array $roles): array
-    {
-        return $this->roles()->sync(
-            Role::whereIn('name', $roles)->get()
-        );
+        return $this->belongsToMany(Role::class)->select(['id', 'label', 'name']);
     }
 
     /**
@@ -57,7 +50,7 @@ trait HasRole
     {
         $result = collect();
 
-        $roles = $this->roles()->with('permissions')->get();
+        $roles = $this->defaultRoles()->with('permissions')->get();
 
         return $roles
             ->map(fn($item) => $item->permissions->map(fn($p) => $p->name))
@@ -85,6 +78,28 @@ trait HasRole
     }
 
     /**
+     * Getting roles from parent.
+     *
+     * @return array
+     */
+    public function rolesFromParent(): array
+    {
+        /** @var User $parent */
+        $parent = $this;
+
+        // Если у пользователя нет родителя, то вернуть пустой массив
+        if ($parent->parent_id === null) {
+            return [];
+        }
+
+        while ($parent->parent && count($parent->parent->roles)) {
+            $parent = $parent->parent;
+        }
+
+        return $parent->roles->toArray() ?? [];
+    }
+
+    /**
      * Get all permissions for user
      *
      * @return Attribute<array>
@@ -100,5 +115,57 @@ trait HasRole
         return Attribute::make(
             get: fn() => $permissions
         );
+    }
+
+    public function roles(): Attribute
+    {
+        $roles = $this->defaultRoles;
+
+        if (!count($roles)) {
+            $roles = $this->rolesFromParent();
+        }
+
+        return Attribute::make(
+            get: fn() => $roles
+        );
+    }
+
+    /**
+     * Deleting role.
+     *
+     * @param int|string|Role $role
+     * @return int
+     */
+    public function removeRole(int|string|Role $role): int
+    {
+        if ($role instanceof Role) {
+            return $this->defaultRoles()->detach($role->id);
+        }
+
+        if ($ids = Role::query()->byCredentials([$role])->get()->pluck('id')) {
+            return $this->defaultRoles()->detach($ids);
+        }
+
+        return false;
+    }
+
+    /**
+     * Перезапись Ролей
+     *
+     * @param array $roles - Массив может содержать в себе id, name и инстансы класса Role
+     */
+    public function syncRoles(array $roles): void
+    {
+        $models = array_filter($roles, fn ($item) => $item instanceof Role);
+
+        $roles = Role::query()->byCredentials($roles)->get() ?? collect();
+
+        if (!empty($models)) {
+            $roles = $roles->push($models);
+        }
+
+        if ($roles->count()) {
+            $this->defaultRoles()->sync($roles);
+        }
     }
 }

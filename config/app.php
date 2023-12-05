@@ -170,6 +170,7 @@ return [
         Ads\Logger\Providers\LoggerServiceProvider::class,
         Ads\WsdlClient\Providers\WsdlClientServiceProvider::class,
         Ads\Websockets\Providers\WebSocketServiceProvider::class,
+        Ads\Front\Providers\FrontServiceProvider::class,
 
         /*
          * Application Service Providers...

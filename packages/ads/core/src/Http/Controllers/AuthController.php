@@ -5,6 +5,7 @@ namespace Ads\Core\Http\Controllers;
 use Ads\Core\Exceptions\User\UserNotFoundException;
 use Ads\Core\Exceptions\User\UserPasswordInvalidException;
 use Ads\Core\Http\Requests\AuthRequest;
+use Ads\Core\Http\Resources\UserResource;
 use Ads\Core\Services\User\AuthService;
 use Ads\Core\Services\User\UserService;
 use App\Http\Controllers\Controller;
@@ -32,7 +33,7 @@ class AuthController extends Controller
         $user = $this->userService->userByCredential($request->validated());
 
         return response()->success(
-            $this->service->login($user, $request->password)
+            new UserResource($this->service->login($user, $request->password))
         );
     }
 

@@ -3,11 +3,15 @@
 use Ads\Core\Http\Controllers\UserController;
 use Ads\Core\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use Ads\Core\Http\Controllers\PasswordController;
 
 Route::post('auth/login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('auth/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::post('password/restore', [PasswordController::class, 'restore']);
+    Route::post('password/change', [PasswordController::class, 'change']);
 
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'index'])
@@ -27,5 +31,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             ->can('user_delete', 'user');
 
         Route::get('/info', [UserController::class, 'info'])->name('users.info');
+
+        Route::get('/{user}', [UserController::class, 'show'])
+            ->name('users.show')
+            ->can('user_show', 'user');
     });
 });
